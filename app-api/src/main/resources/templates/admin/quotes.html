@@ -32,7 +32,15 @@
         <a href="/admin/tours">투어 상품 관리</a>
     </div>
     <div class="main">
-        <h1 style="margin-bottom:1.5rem;">📋 견적 관리</h1>
+        <h1 style="margin-bottom:1rem;">📋 견적 관리</h1>
+        <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+            <a href="/admin/quotes" th:classappend="${currentStatus == 'ALL'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#aaa; border:1px solid #0f3460;">전체</a>
+            <a href="/admin/quotes?status=PENDING" th:classappend="${currentStatus == 'PENDING'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#f59e0b; border:1px solid #0f3460;">대기</a>
+            <a href="/admin/quotes?status=QUOTED" th:classappend="${currentStatus == 'QUOTED'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#3b82f6; border:1px solid #0f3460;">견적완료</a>
+            <a href="/admin/quotes?status=CONFIRMED" th:classappend="${currentStatus == 'CONFIRMED'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#10b981; border:1px solid #0f3460;">확정</a>
+            <a href="/admin/quotes?status=CANCELLED" th:classappend="${currentStatus == 'CANCELLED'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#ef4444; border:1px solid #0f3460;">취소</a>
+        </div>
+        <style>.active { background: #0f3460 !important; color: white !important; }</style>
         <table>
             <thead><tr><th>ID</th><th>이름</th><th>연락처</th><th>일수</th><th>인원</th><th>스팟</th><th>숙소</th><th>메모</th><th>상태</th><th>변경</th></tr></thead>
             <tbody>
@@ -47,7 +55,7 @@
                     <td th:text="${q.memo}">-</td>
                     <td th:classappend="'status-' + ${q.status}" th:text="${q.status}">PENDING</td>
                     <td>
-                        <form th:action="@{/quotes/{id}/status(id=${q.id})}" method="post" style="display:flex;gap:0.3rem;">
+                        <form th:action="@{/admin/quotes/{id}/status(id=${q.id})}" method="post" style="display:flex;gap:0.3rem;">
                             <select name="status">
                                 <option value="PENDING">대기</option>
                                 <option value="QUOTED">견적완료</option>

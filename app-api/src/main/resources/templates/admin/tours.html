@@ -72,7 +72,7 @@
                     <p style="color:#aaa; font-size:0.85rem; margin-top:0.3rem;" th:text="${tour.days} + '일 | ' + ${tour.active ? '활성' : '비활성'}">5일</p>
                     <div class="actions">
                         <a th:href="@{/tours/{id}(id=${tour.id})}" class="btn-edit">편집</a>
-                        <form th:action="@{/tours/{id}/toggle(id=${tour.id})}" method="post" style="display:inline;">
+                        <form th:action="@{/admin/tours/{id}/toggle(id=${tour.id})}" method="post" style="display:inline;">
                             <button type="submit" class="btn-toggle" th:text="${tour.active} ? '비활성' : '활성화'">비활성</button>
                         </form>
                     </div>

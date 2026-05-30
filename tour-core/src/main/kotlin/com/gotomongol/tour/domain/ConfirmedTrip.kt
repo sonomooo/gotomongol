@@ -8,6 +8,7 @@ import java.time.LocalDate
 @Table(name = "confirmed_trips")
 class ConfirmedTrip(
     val userId: Long,
+    val quoteRequestId: Long? = null,
     val tourName: String,
     val startDate: LocalDate,
     val endDate: LocalDate,

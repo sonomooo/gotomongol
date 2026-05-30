@@ -3,9 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core-domain"))
-    implementation(project(":user-core"))
-    implementation(project(":tour-core"))
+    implementation(project(":application"))
+    implementation(project(":core-notification"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-security")
