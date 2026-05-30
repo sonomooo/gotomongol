@@ -16,6 +16,16 @@ class GlobalExceptionHandler {
         return ServiceResponse.error(ServiceErrorType.BAD_REQUEST, e.message)
     }
 
+    @ExceptionHandler(IllegalStateException::class)
+    fun handleForbidden(e: IllegalStateException): ServiceResponse<Nothing> {
+        log.warn("[FORBIDDEN] {}", e.message)
+        return when (e.message) {
+            "LOGIN_REQUIRED" -> ServiceResponse.error(ServiceErrorType.UNAUTHORIZED)
+            "ADMIN_ONLY" -> ServiceResponse.error(ServiceErrorType.FORBIDDEN)
+            else -> ServiceResponse.error(ServiceErrorType.BAD_REQUEST, e.message)
+        }
+    }
+
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(e: NoSuchElementException): ServiceResponse<Nothing> {
         log.warn("[NOT_FOUND] {}", e.message)

@@ -8,6 +8,7 @@ import com.gotomongol.tour.domain.QuoteStatus
 import com.gotomongol.tour.domain.Tour
 import com.gotomongol.tour.repository.TourRepository
 import com.gotomongol.user.repository.UserRepository
+import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -28,10 +29,20 @@ class AdminController(
     @Value("\${upload.path:./uploads}") private val uploadPath: String
 ) {
 
+    private fun requireAdmin(session: HttpSession) {
+        val userId = session.getAttribute("userId") as? Long
+            ?: throw IllegalStateException("LOGIN_REQUIRED")
+        val user = userRepository.findById(userId).orElseThrow()
+        if (user.role != com.gotomongol.user.domain.UserRole.ADMIN) {
+            throw IllegalStateException("ADMIN_ONLY")
+        }
+    }
+
     // ─── 대시보드 ───
 
     @GetMapping
-    fun dashboard(model: Model): String {
+    fun dashboard(session: HttpSession, model: Model): String {
+        requireAdmin(session)
         model.addAttribute("quoteCount", quoteApp.findAll().size)
         model.addAttribute("tripCount", tripApp.findAllTrips().size)
         model.addAttribute("userCount", userRepository.count())

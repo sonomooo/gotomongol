@@ -20,6 +20,7 @@ data class ServiceResponse<T>(
 
 enum class ServiceErrorType(val message: String) {
     UNAUTHORIZED("로그인이 필요합니다."),
+    FORBIDDEN("접근 권한이 없습니다."),
     BAD_REQUEST("잘못된 요청입니다."),
     NOT_FOUND("데이터를 찾을 수 없습니다."),
     CONFLICT("이미 존재하는 데이터입니다."),
