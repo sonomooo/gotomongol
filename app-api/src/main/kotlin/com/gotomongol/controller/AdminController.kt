@@ -3,12 +3,12 @@ package com.gotomongol.controller
 import com.gotomongol.application.QuoteApplication
 import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.TripRegisterCommand
+import com.gotomongol.domain.response.ServiceResponse
 import com.gotomongol.tour.domain.QuoteStatus
 import com.gotomongol.tour.domain.Tour
 import com.gotomongol.tour.repository.TourRepository
 import com.gotomongol.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -71,7 +71,7 @@ class AdminController(
 
     @PostMapping("/trips")
     @ResponseBody
-    fun createTrip(@RequestBody body: Map<String, Any?>): ResponseEntity<Any> {
+    fun createTrip(@RequestBody body: Map<String, Any?>): ServiceResponse<Map<String, Any>> {
         val cmd = TripRegisterCommand(
             userId = (body["userId"] as Number).toLong(),
             quoteRequestId = (body["quoteRequestId"] as? Number)?.toLong(),
@@ -85,7 +85,7 @@ class AdminController(
             guideNote = body["guideNote"] as? String
         )
         val result = tripApp.registerTrip(cmd)
-        return ResponseEntity.ok(mapOf("id" to result.id, "message" to result.message))
+        return ServiceResponse.success(mapOf("id" to result.id, "message" to result.message))
     }
 
     // ─── 투어 상품 관리 ───

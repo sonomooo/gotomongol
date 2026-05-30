@@ -5,6 +5,8 @@ import com.gotomongol.application.QuoteApplication
 import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.BookingCommand
 import com.gotomongol.application.dto.QuoteSubmitCommand
+import com.gotomongol.domain.response.ServiceErrorType
+import com.gotomongol.domain.response.ServiceResponse
 import com.gotomongol.user.dto.UserResponse
 import jakarta.servlet.http.HttpSession
 import org.springframework.http.ResponseEntity
@@ -86,62 +88,65 @@ class StoreController(
 
     @PostMapping("/api/auth/send-code")
     @ResponseBody
-    fun sendCode(@RequestBody body: Map<String, String>): ResponseEntity<Map<String, String>> {
+    fun sendCode(@RequestBody body: Map<String, String>): ServiceResponse<Nothing> {
         authApp.sendCode(body["phone"]!!)
-        return ResponseEntity.ok(mapOf("message" to "인증코드가 발송되었습니다."))
+        return ServiceResponse.success()
     }
 
     @PostMapping("/api/auth/verify")
     @ResponseBody
-    fun verify(@RequestBody body: Map<String, String>, session: HttpSession): ResponseEntity<UserResponse> {
-        if (!authApp.verify(body["phone"]!!, body["code"]!!)) return ResponseEntity.badRequest().build()
-        val user = authApp.loginOrRegister(body["phone"]!!, body["name"] ?: "")
+    fun verify(@RequestBody body: Map<String, String>, session: HttpSession): ServiceResponse<UserResponse> {
+        val phone = body["phone"]!!
+        val code = body["code"]!!
+        val name = body["name"] ?: ""
+        if (!authApp.verify(phone, code)) return ServiceResponse.error(ServiceErrorType.VERIFICATION_FAILED)
+        val user = authApp.loginOrRegister(phone, name)
         session.setAttribute("userId", user.id)
-        return ResponseEntity.ok(UserResponse(user.id, user.name, user.phone, user.email, user.role.name))
+        return ServiceResponse.success(UserResponse(user.id, user.name, user.phone, user.email, user.role.name))
     }
 
     @PostMapping("/api/auth/logout")
     @ResponseBody
-    fun logout(session: HttpSession): ResponseEntity<Map<String, String>> {
+    fun logout(session: HttpSession): ServiceResponse<Nothing> {
         session.invalidate()
-        return ResponseEntity.ok(mapOf("message" to "로그아웃 되었습니다."))
+        return ServiceResponse.success()
     }
 
     @GetMapping("/api/auth/me")
     @ResponseBody
-    fun me(session: HttpSession): ResponseEntity<UserResponse> {
-        val userId = session.getAttribute("userId") as? Long ?: return ResponseEntity.status(401).build()
+    fun me(session: HttpSession): ServiceResponse<UserResponse> {
+        val userId = session.getAttribute("userId") as? Long
+            ?: return ServiceResponse.error(ServiceErrorType.UNAUTHORIZED)
         val user = authApp.findUserById(userId)
-        return ResponseEntity.ok(UserResponse(user.id, user.name, user.phone, user.email, user.role.name))
+        return ServiceResponse.success(UserResponse(user.id, user.name, user.phone, user.email, user.role.name))
     }
 
     // ─── API: 예약 ───
 
     @GetMapping("/api/bookings/unavailable")
     @ResponseBody
-    fun unavailableDates(@RequestParam from: LocalDate, @RequestParam to: LocalDate): List<String> =
-        tripApp.getUnavailableDates(from, to)
+    fun unavailableDates(@RequestParam from: LocalDate, @RequestParam to: LocalDate): ServiceResponse<List<String>> =
+        ServiceResponse.success(tripApp.getUnavailableDates(from, to))
 
     @PostMapping("/api/bookings")
     @ResponseBody
-    fun createBooking(@RequestBody body: Map<String, Any>): ResponseEntity<Any> {
+    fun createBooking(@RequestBody body: Map<String, Any>): ServiceResponse<Nothing> {
         return try {
-            val cmd = BookingCommand(
+            tripApp.createBooking(BookingCommand(
                 customerName = body["customerName"] as String,
                 phone = body["phone"] as String,
                 tourName = body["tourName"] as String,
                 startDate = LocalDate.parse(body["startDate"] as String),
                 endDate = LocalDate.parse(body["endDate"] as String),
                 groupSize = (body["groupSize"] as Number).toInt()
-            )
-            tripApp.createBooking(cmd)
-            ResponseEntity.ok(mapOf("message" to "예약 완료"))
+            ))
+            ServiceResponse.success()
         } catch (e: IllegalArgumentException) {
-            ResponseEntity.badRequest().body(mapOf("error" to e.message))
+            ServiceResponse.error(ServiceErrorType.BOOKING_CONFLICT, e.message)
         }
     }
 
-    // ─── API: 캘린더 다운로드 ───
+    // ─── API: 캘린더 ───
 
     @GetMapping("/my/trips/{id}/calendar")
     @ResponseBody
