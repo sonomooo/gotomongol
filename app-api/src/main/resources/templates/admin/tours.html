@@ -29,10 +29,10 @@
 <body>
     <div class="sidebar">
         <h2>🇲🇳 고투몽골 Admin</h2>
-        <a href="/">대시보드</a>
-        <a href="/quotes">견적 관리</a>
-        <a href="/trips">여행 관리</a>
-        <a href="/tours" class="active">투어 상품 관리</a>
+        <a href="/admin">대시보드</a>
+        <a href="/admin/quotes">견적 관리</a>
+        <a href="/admin/trips">여행 관리</a>
+        <a href="/admin/tours" class="active">투어 상품 관리</a>
     </div>
     <div class="main">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
@@ -43,7 +43,7 @@
         <!-- 새 상품 추가 폼 -->
         <div id="addForm" style="display:none; background:#16213e; padding:1.5rem; border-radius:8px; margin-bottom:2rem;">
             <h3 style="margin-bottom:1rem;">새 투어 상품</h3>
-            <form action="/tours/new" method="post" enctype="multipart/form-data">
+            <form action="/admin/tours/new" method="post" enctype="multipart/form-data">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:0.8rem;">
                     <div><label style="color:#aaa; font-size:0.85rem;">투어명</label><input type="text" name="name" required style="width:100%; padding:0.5rem; border:1px solid #0f3460; border-radius:4px; background:#1a1a2e; color:#eee;"></div>
                     <div><label style="color:#aaa; font-size:0.85rem;">일수</label><input type="number" name="days" value="5" required style="width:100%; padding:0.5rem; border:1px solid #0f3460; border-radius:4px; background:#1a1a2e; color:#eee;"></div>

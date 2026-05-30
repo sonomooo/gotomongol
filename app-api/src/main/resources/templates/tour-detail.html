@@ -21,6 +21,7 @@
 <body>
     <div class="container">
         <a href="/" class="back">← 목록으로</a>
+        <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}" style="width:100%; max-height:300px; object-fit:cover; border-radius:12px; margin-bottom:1.5rem;">
         <h1 th:text="${tour.name}">투어명</h1>
         <p class="meta" th:text="${tour.days} + '박' + (${tour.days} + 1) + '일'">4박5일</p>
         <p class="price" th:text="'₩' + ${#numbers.formatInteger(tour.minPrice, 0, 'COMMA')} + ' ~ ₩' + ${#numbers.formatInteger(tour.maxPrice, 0, 'COMMA')}">₩800,000 ~ ₩1,000,000</p>
@@ -37,6 +38,8 @@
         </div>
 
         <a th:href="@{/custom(tourName=${tour.name}, spots=${#strings.listJoin(tour.spots, ',')}, activities=${#strings.listJoin(tour.activities, ',')}, days=${tour.days})}" class="btn">이 코스 기반으로 커스텀하기 →</a>
+
+        <div th:if="${tour.detailContent != null}" style="margin-top:2rem; line-height:1.8;" th:utext="${tour.detailContent}"></div>
     </div>
 </body>
 </html>

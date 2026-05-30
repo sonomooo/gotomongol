@@ -1,4 +1,4 @@
-package com.gotomongol.admin.controller
+package com.gotomongol.controller
 
 import com.gotomongol.tour.domain.Tour
 import com.gotomongol.tour.repository.TourRepository
@@ -8,13 +8,12 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
 @Controller
-@RequestMapping("/tours")
-class TourAdminController(
+@RequestMapping("/admin/tours")
+class AdminTourController(
     private val tourRepository: TourRepository,
     @Value("\${upload.path:./uploads}") private val uploadPath: String
 ) {
@@ -22,7 +21,7 @@ class TourAdminController(
     @GetMapping
     fun list(model: Model): String {
         model.addAttribute("tours", tourRepository.findAll())
-        return "tours"
+        return "admin/tours"
     }
 
     @PostMapping("/new")
@@ -42,17 +41,15 @@ class TourAdminController(
             spots = spots?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }?.toMutableList() ?: mutableListOf(),
             activities = activities?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }?.toMutableList() ?: mutableListOf()
         )
-        if (image != null && !image.isEmpty) {
-            tour.imageUrl = saveFile(image)
-        }
+        if (image != null && !image.isEmpty) tour.imageUrl = saveFile(image)
         tourRepository.save(tour)
-        return "redirect:/tours"
+        return "redirect:/admin/tours"
     }
 
     @GetMapping("/{id}")
     fun edit(@PathVariable id: Long, model: Model): String {
         model.addAttribute("tour", tourRepository.findById(id).orElseThrow())
-        return "tour-edit"
+        return "admin/tour-edit"
     }
 
     @PostMapping("/{id}")
@@ -69,21 +66,14 @@ class TourAdminController(
         @RequestParam(required = false) image: MultipartFile?
     ): String {
         val tour = tourRepository.findById(id).orElseThrow()
-        tour.name = name
-        tour.days = days
-        tour.description = description
-        tour.minPrice = minPrice
-        tour.maxPrice = maxPrice
+        tour.name = name; tour.days = days; tour.description = description
+        tour.minPrice = minPrice; tour.maxPrice = maxPrice
         tour.spots = spots.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
         tour.activities = activities.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
         tour.detailContent = detailContent
-
-        if (image != null && !image.isEmpty) {
-            tour.imageUrl = saveFile(image)
-        }
-
+        if (image != null && !image.isEmpty) tour.imageUrl = saveFile(image)
         tourRepository.save(tour)
-        return "redirect:/tours"
+        return "redirect:/admin/tours"
     }
 
     @PostMapping("/{id}/toggle")
@@ -91,7 +81,7 @@ class TourAdminController(
         val tour = tourRepository.findById(id).orElseThrow()
         tour.active = !tour.active
         tourRepository.save(tour)
-        return "redirect:/tours"
+        return "redirect:/admin/tours"
     }
 
     private fun saveFile(file: MultipartFile): String {

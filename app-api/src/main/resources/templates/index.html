@@ -47,6 +47,8 @@
         <div class="tour-grid">
             <div class="tour-card" th:each="tour : ${tours}">
                 <a th:href="@{/tours/{id}(id=${tour.id})}">
+                    <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}" style="width:100%; height:180px; object-fit:cover; border-radius:12px 12px 0 0;">
+                    <div th:if="${tour.imageUrl == null}" style="width:100%; height:180px; background:#f0f0f0; border-radius:12px 12px 0 0; display:flex; align-items:center; justify-content:center; color:#999;">📷</div>
                     <div class="info">
                         <h3 th:text="${tour.name}">투어명</h3>
                         <p class="days" th:text="${tour.days} + '박' + (${tour.days} + 1) + '일'">4박5일</p>
