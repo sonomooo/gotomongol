@@ -131,7 +131,7 @@ gotomongol.com
 | 구분 | 기술 |
 |---|---|
 | Backend | Spring Boot 4.0.x + Kotlin 2.2 + Spring Framework 7 |
-| JVM | Java 24 |
+| JVM | Java 21 (LTS) |
 | DB | PostgreSQL (Neon/Supabase 무료 티어) |
 | Frontend | Thymeleaf (SSR) → 추후 React/Next.js 분리 가능 |
 | 배포 | Railway 또는 Render |

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 고투몽골</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f9f9f9; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .card { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
+        .card h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .card p.sub { text-align: center; color: #666; margin-bottom: 2rem; font-size: 0.9rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        input { width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        input:focus { outline: none; border-color: #ff6b35; }
+        .btn { width: 100%; padding: 0.9rem; background: #ff6b35; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: #e55a2b; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .code-row { display: flex; gap: 0.5rem; }
+        .code-row input { flex: 1; }
+        .code-row .btn-sm { padding: 0.8rem 1rem; width: auto; font-size: 0.85rem; white-space: nowrap; }
+        .timer { text-align: center; color: #ff6b35; font-size: 0.85rem; margin-top: 0.5rem; min-height: 1.2rem; }
+        .step { display: none; }
+        .step.active { display: block; }
+        .error { color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 0.5rem; min-height: 1.2rem; }
+        a { color: #ff6b35; text-decoration: none; }
+        .back { display: block; text-align: center; margin-top: 1.5rem; color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🇲🇳 고투몽골</h1>
+        <p class="sub">핸드폰 번호로 간편 로그인</p>
+
+        <!-- Step 1: 핸드폰 번호 입력 -->
+        <div id="step1" class="step active">
+            <div class="form-group">
+                <label>핸드폰 번호</label>
+                <input type="tel" id="phone" placeholder="010-0000-0000" maxlength="13">
+            </div>
+            <div class="form-group">
+                <label>이름</label>
+                <input type="text" id="name" placeholder="홍길동">
+            </div>
+            <button class="btn" onclick="sendCode()">인증코드 받기</button>
+            <div class="error" id="error1"></div>
+        </div>
+
+        <!-- Step 2: 인증코드 입력 -->
+        <div id="step2" class="step">
+            <div class="form-group">
+                <label>인증코드 6자리</label>
+                <div class="code-row">
+                    <input type="text" id="code" placeholder="000000" maxlength="6" inputmode="numeric">
+                    <button class="btn btn-sm" onclick="sendCode()">재발송</button>
+                </div>
+                <div class="timer" id="timer"></div>
+            </div>
+            <button class="btn" onclick="verify()">확인</button>
+            <div class="error" id="error2"></div>
+        </div>
+
+        <a href="/" class="back">← 홈으로</a>
+    </div>
+
+    <script>
+        let countdown;
+
+        function sendCode() {
+            const phone = document.getElementById('phone').value.trim();
+            const name = document.getElementById('name').value.trim();
+            if (!phone || !name) { document.getElementById('error1').textContent = '이름과 핸드폰 번호를 입력해주세요.'; return; }
+
+            fetch('/api/auth/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone })
+            }).then(r => {
+                if (r.ok) {
+                    document.getElementById('step1').classList.remove('active');
+                    document.getElementById('step2').classList.add('active');
+                    startTimer();
+                }
+            });
+        }
+
+        function verify() {
+            const phone = document.getElementById('phone').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const code = document.getElementById('code').value.trim();
+
+            fetch('/api/auth/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, name, code })
+            }).then(r => {
+                if (r.ok) { window.location.href = '/my'; }
+                else { document.getElementById('error2').textContent = '인증코드가 올바르지 않습니다.'; }
+            });
+        }
+
+        function startTimer() {
+            let sec = 180;
+            clearInterval(countdown);
+            countdown = setInterval(() => {
+                const m = Math.floor(sec / 60);
+                const s = sec % 60;
+                document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                if (--sec < 0) { clearInterval(countdown); document.getElementById('timer').textContent = '시간 만료. 재발송해주세요.'; }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

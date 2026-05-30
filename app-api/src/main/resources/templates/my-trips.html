@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 여행 - 고투몽골</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f9f9f9; padding: 2rem 1rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { margin-bottom: 2rem; }
+        .trip-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .trip-card h3 { margin-bottom: 0.5rem; color: #ff6b35; }
+        .trip-card .meta { color: #666; font-size: 0.9rem; line-height: 1.8; }
+        .status { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .status-UPCOMING { background: #dbeafe; color: #1d4ed8; }
+        .status-IN_PROGRESS { background: #d1fae5; color: #059669; }
+        .status-COMPLETED { background: #f3f4f6; color: #6b7280; }
+        .trip-card a { color: #ff6b35; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        .empty { text-align: center; padding: 4rem; color: #999; }
+        .nav { margin-bottom: 2rem; }
+        .nav a { color: #666; text-decoration: none; margin-right: 1rem; }
+        .nav a.active { color: #ff6b35; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">홈</a>
+            <a href="/my/trips" class="active">내 여행</a>
+            <a href="/custom">견적 요청</a>
+        </div>
+        <h1>🧳 내 여행</h1>
+
+        <div th:if="${#lists.isEmpty(trips)}" class="empty">
+            <p>확정된 여행이 없습니다.</p>
+        </div>
+
+        <div th:each="trip : ${trips}" class="trip-card">
+            <h3 th:text="${trip.tourName}">홉스골 프리미엄</h3>
+            <span class="status" th:classappend="'status-' + ${trip.status}"
+                  th:text="${trip.status == 'UPCOMING'} ? '예정' : (${trip.status == 'IN_PROGRESS'} ? '진행중' : '완료')">예정</span>
+            <div class="meta">
+                <p>📅 <span th:text="${trip.startDate} + ' ~ ' + ${trip.endDate}">2026-07-10 ~ 2026-07-16</span></p>
+                <p>📍 <span th:text="${trip.spots}">홉스골, 온천</span></p>
+                <p>👥 <span th:text="${trip.groupSize} + '명'">4명</span></p>
+            </div>
+            <p style="margin-top:0.8rem;">
+                <a th:href="@{/my/trips/{id}(id=${trip.id})}">일정 상세 보기 →</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

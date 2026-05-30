@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 예약 - 고투몽골</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f9f9f9; padding: 2rem 1rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 1.5rem; }
+        .user-info { color: #666; font-size: 0.9rem; }
+        .logout { color: #ef4444; cursor: pointer; text-decoration: underline; margin-left: 1rem; }
+        .booking-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .booking-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .booking-card h3 { font-size: 1.1rem; }
+        .status { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        .status-PENDING { background: #fef3c7; color: #d97706; }
+        .status-CONFIRMED { background: #d1fae5; color: #059669; }
+        .status-CANCELLED { background: #fee2e2; color: #dc2626; }
+        .booking-card .details { color: #666; font-size: 0.9rem; line-height: 1.6; }
+        .empty { text-align: center; padding: 4rem 1rem; color: #999; }
+        .empty a { color: #ff6b35; text-decoration: none; font-weight: bold; }
+        .nav { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .nav a { color: #666; text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; }
+        .nav a.active { background: #ff6b35; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>내 예약</h1>
+            <div>
+                <span class="user-info" th:text="${userName} + '님'">홍길동님</span>
+                <span class="logout" onclick="logout()">로그아웃</span>
+            </div>
+        </div>
+
+        <div class="nav">
+            <a href="/" >홈</a>
+            <a href="/my" class="active">내 예약</a>
+            <a href="/booking">새 예약</a>
+        </div>
+
+        <!-- 예약 목록 -->
+        <div th:if="${#lists.isEmpty(bookings)}">
+            <div class="empty">
+                <p>아직 예약이 없습니다.</p>
+                <p style="margin-top:1rem;"><a href="/custom">커스텀 투어 만들기 →</a></p>
+            </div>
+        </div>
+
+        <div th:each="b : ${bookings}" class="booking-card">
+            <div class="top">
+                <h3 th:text="${b.tourName}">초원 힐링 코스</h3>
+                <span class="status" th:classappend="'status-' + ${b.status}" th:text="${b.status == 'PENDING'} ? '대기중' : (${b.status == 'CONFIRMED'} ? '확정' : '취소')">대기중</span>
+            </div>
+            <div class="details">
+                <p>📅 <span th:text="${b.startDate} + ' ~ ' + ${b.endDate}">2026-07-01 ~ 2026-07-05</span></p>
+                <p>👥 <span th:text="${b.groupSize} + '명'">2명</span></p>
+                <p>📍 <span th:text="${b.spots}">홉스골, 테를지</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            fetch('/api/auth/logout', { method: 'POST' }).then(() => window.location.href = '/login');
+        }
+    </script>
+</body>
+</html>

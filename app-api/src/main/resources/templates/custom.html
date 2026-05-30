@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커스텀 투어 만들기 - 고투몽골</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; color: #333; background: #f9f9f9; }
+        .container { max-width: 700px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        h1 { text-align: center; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
+        input, select, textarea { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+        .checkbox-group label { font-weight: normal; display: flex; align-items: center; gap: 0.3rem; }
+        .checkbox-group input { width: auto; }
+        .btn { display: block; width: 100%; padding: 1rem; background: #ff6b35; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: #e55a2b; }
+
+        /* 캘린더 */
+        .calendar { border: 1px solid #eee; border-radius: 12px; padding: 1rem; margin-top: 0.5rem; }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .cal-header h3 { font-size: 1rem; }
+        .cal-header button { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 0.3rem 0.7rem; cursor: pointer; }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.8rem; color: #999; margin-bottom: 0.3rem; }
+        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+        .day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .day:hover:not(.disabled):not(.booked) { background: #fff3ed; }
+        .day.selected { background: #ff6b35; color: white; }
+        .day.range { background: #ffe8dd; }
+        .day.booked { background: #fee2e2; color: #dc2626; cursor: not-allowed; text-decoration: line-through; }
+        .day.disabled { color: #ccc; cursor: default; }
+        .day.empty { cursor: default; }
+        .legend { display: flex; gap: 1rem; margin-top: 0.8rem; font-size: 0.8rem; color: #666; }
+        .legend span { display: flex; align-items: center; gap: 0.3rem; }
+        .legend .dot { width: 10px; height: 10px; border-radius: 3px; }
+        .dot-booked { background: #fee2e2; border: 1px solid #dc2626; }
+        .dot-selected { background: #ff6b35; }
+        .selected-info { margin-top: 0.8rem; padding: 0.6rem; background: #f0f0f0; border-radius: 6px; font-size: 0.9rem; }
+        a { color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇲🇳 나만의 몽골 투어 설계</h1>
+        <form method="post" action="/custom" id="quoteForm">
+            <div class="form-group">
+                <label>이름 *</label>
+                <input type="text" name="customerName" required>
+            </div>
+            <div class="form-group">
+                <label>연락처 *</label>
+                <input type="tel" name="phone" required placeholder="010-0000-0000">
+            </div>
+            <div class="form-group">
+                <label>이메일</label>
+                <input type="email" name="email">
+            </div>
+            <div class="form-group">
+                <label>여행 일수 *</label>
+                <select name="days" required id="daysSelect">
+                    <option value="3">3일</option>
+                    <option value="5" selected>5일</option>
+                    <option value="7">7일</option>
+                    <option value="10">10일 이상</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>인원 *</label>
+                <select name="groupSize" required>
+                    <option value="2">2명</option>
+                    <option value="4">4명</option>
+                    <option value="6">6명 이상</option>
+                </select>
+            </div>
+
+            <!-- 캘린더 날짜 선택 -->
+            <div class="form-group">
+                <label>희망 출발일 *</label>
+                <input type="hidden" name="preferredDate" id="preferredDateInput">
+                <div class="calendar">
+                    <div class="cal-header">
+                        <button type="button" onclick="prevMonth()">◀</button>
+                        <h3 id="monthTitle"></h3>
+                        <button type="button" onclick="nextMonth()">▶</button>
+                    </div>
+                    <div class="weekdays"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+                    <div class="days" id="calendarDays"></div>
+                    <div class="legend">
+                        <span><span class="dot dot-selected"></span> 출발/종료</span>
+                        <span><span class="dot" style="background:#ffe8dd;"></span> 여행 기간</span>
+                        <span><span class="dot dot-booked"></span> 예약 불가</span>
+                    </div>
+                    <div class="selected-info" id="selectedInfo">출발일 → 종료일 순서로 클릭하세요</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>가고 싶은 곳 (복수 선택)</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="spots" value="홉스골 호수"> 홉스골 호수</label>
+                    <label><input type="checkbox" name="spots" value="고비사막"> 고비사막</label>
+                    <label><input type="checkbox" name="spots" value="테를지 국립공원"> 테를지 국립공원</label>
+                    <label><input type="checkbox" name="spots" value="오르혼 폭포"> 오르혼 폭포</label>
+                    <label><input type="checkbox" name="spots" value="쳉헤르 온천"> 쳉헤르 온천</label>
+                    <label><input type="checkbox" name="spots" value="미니사막"> 미니사막</label>
+                    <label><input type="checkbox" name="spots" value="울란바토르 시내"> 울란바토르 시내</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>하고 싶은 활동 (복수 선택)</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="activities" value="승마"> 승마</label>
+                    <label><input type="checkbox" name="activities" value="낙타"> 낙타</label>
+                    <label><input type="checkbox" name="activities" value="독수리 체험"> 독수리 체험</label>
+                    <label><input type="checkbox" name="activities" value="게르 숙박"> 게르 숙박</label>
+                    <label><input type="checkbox" name="activities" value="유목민 홈스테이"> 유목민 홈스테이</label>
+                    <label><input type="checkbox" name="activities" value="별보기/은하수"> 별보기/은하수</label>
+                    <label><input type="checkbox" name="activities" value="온천"> 온천</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>숙소 등급 *</label>
+                <select name="accommodationType" required>
+                    <option value="CAMP">캠프 (기본)</option>
+                    <option value="PREMIUM_CAMP">프리미엄 캠프</option>
+                    <option value="HOTEL_MIX">호텔 혼합</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>추가 요청사항</label>
+                <textarea name="memo" rows="3" placeholder="특별히 원하시는 것이 있으면 적어주세요"></textarea>
+            </div>
+            <button type="submit" class="btn">견적 요청하기</button>
+        </form>
+        <p style="text-align:center; margin-top:1rem; color:#666;">24시간 내 맞춤 일정표와 가격을 보내드립니다</p>
+    </div>
+
+    <script>
+        let currentYear, currentMonth;
+        let startDate = null, endDate = null;
+        let bookedDates = new Set();
+
+        const now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+
+        async function loadBookedDates() {
+            const from = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-01`;
+            const lastDay = new Date(currentYear, currentMonth+1, 0).getDate();
+            const to = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${lastDay}`;
+            try {
+                const res = await fetch(`/api/bookings/unavailable?from=${from}&to=${to}`);
+                const dates = await res.json();
+                bookedDates = new Set(dates);
+            } catch(e) { bookedDates = new Set(); }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            document.getElementById('monthTitle').textContent = `${currentYear}년 ${currentMonth + 1}월`;
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+
+            let html = '';
+            for (let i = 0; i < firstDay; i++) html += '<div class="day empty"></div>';
+
+            for (let d = 1; d <= lastDate; d++) {
+                const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const dateObj = new Date(currentYear, currentMonth, d);
+                const isPast = dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                const isBooked = bookedDates.has(dateStr);
+                const isStart = startDate === dateStr;
+                const isEnd = endDate === dateStr;
+                const inRange = startDate && endDate && dateStr > startDate && dateStr < endDate;
+
+                let cls = 'day';
+                if (isPast) cls += ' disabled';
+                else if (isBooked) cls += ' booked';
+                else if (isStart || isEnd) cls += ' selected';
+                else if (inRange) cls += ' range';
+
+                const clickable = !isPast && !isBooked;
+                html += `<div class="${cls}" ${clickable ? `onclick="selectDate('${dateStr}')"` : ''}>${d}</div>`;
+            }
+            document.getElementById('calendarDays').innerHTML = html;
+        }
+
+        function selectDate(dateStr) {
+            // 첫 클릭 = 출발일, 두번째 클릭 = 종료일
+            if (!startDate || (startDate && endDate)) {
+                startDate = dateStr;
+                endDate = null;
+            } else {
+                if (dateStr < startDate) {
+                    endDate = startDate;
+                    startDate = dateStr;
+                } else if (dateStr === startDate) {
+                    return;
+                } else {
+                    endDate = dateStr;
+                }
+                // 범위 내 예약 불가 날짜 체크
+                for (const d of bookedDates) {
+                    if (d >= startDate && d <= endDate) {
+                        alert('선택한 기간에 예약 불가 날짜가 포함되어 있습니다.');
+                        startDate = null; endDate = null;
+                        updateInfo();
+                        renderCalendar();
+                        return;
+                    }
+                }
+            }
+            updateInfo();
+            renderCalendar();
+        }
+
+        function updateInfo() {
+            const info = document.getElementById('selectedInfo');
+            const input = document.getElementById('preferredDateInput');
+            const daysSelect = document.getElementById('daysSelect');
+
+            if (startDate && endDate) {
+                const nights = daysBetween(startDate, endDate);
+                info.textContent = `📅 ${startDate} ~ ${endDate} (${nights}박${nights+1}일)`;
+                input.value = startDate;
+                // 일수도 자동 맞춤
+                daysSelect.value = nights + 1 <= 3 ? '3' : nights + 1 <= 5 ? '5' : nights + 1 <= 7 ? '7' : '10';
+            } else if (startDate) {
+                info.textContent = `📅 출발일: ${startDate} (종료일을 선택하세요)`;
+                input.value = '';
+            } else {
+                info.textContent = '출발일 → 종료일 순서로 클릭하세요';
+                input.value = '';
+            }
+        }
+
+        function daysBetween(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            loadBookedDates();
+        }
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            loadBookedDates();
+        }
+
+        loadBookedDates();
+    </script>
+</body>
+</html>
