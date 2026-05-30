@@ -2,6 +2,7 @@ package com.gotomongol.controller
 
 import com.gotomongol.application.QuoteApplication
 import com.gotomongol.application.TripApplication
+import com.gotomongol.application.dto.TripRegisterCommand
 import com.gotomongol.tour.domain.QuoteStatus
 import com.gotomongol.tour.domain.Tour
 import com.gotomongol.tour.repository.TourRepository
@@ -71,10 +72,8 @@ class AdminController(
     @PostMapping("/trips")
     @ResponseBody
     fun createTrip(@RequestBody body: Map<String, Any?>): ResponseEntity<Any> {
-        val userId = (body["userId"] as Number).toLong()
-        val user = userRepository.findById(userId).orElseThrow()
-        val trip = tripApp.registerTrip(
-            userId = userId,
+        val cmd = TripRegisterCommand(
+            userId = (body["userId"] as Number).toLong(),
             quoteRequestId = (body["quoteRequestId"] as? Number)?.toLong(),
             tourName = body["tourName"] as String,
             startDate = LocalDate.parse(body["startDate"] as String),
@@ -85,7 +84,8 @@ class AdminController(
             meetingInfo = body["meetingInfo"] as? String,
             guideNote = body["guideNote"] as? String
         )
-        return ResponseEntity.ok(mapOf("id" to trip.id, "message" to "${user.name}님 여행 등록 완료"))
+        val result = tripApp.registerTrip(cmd)
+        return ResponseEntity.ok(mapOf("id" to result.id, "message" to result.message))
     }
 
     // ─── 투어 상품 관리 ───

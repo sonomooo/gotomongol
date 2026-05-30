@@ -1,5 +1,6 @@
 package com.gotomongol.application
 
+import com.gotomongol.application.dto.QuoteSubmitCommand
 import com.gotomongol.domain.event.QuoteSubmittedEvent
 import com.gotomongol.tour.domain.AccommodationType
 import com.gotomongol.tour.domain.QuoteRequest
@@ -8,7 +9,6 @@ import com.gotomongol.tour.repository.QuoteRequestRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @Service
 @Transactional
@@ -17,21 +17,16 @@ class QuoteApplication(
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
-    fun submit(
-        customerName: String, phone: String, email: String?,
-        days: Int, groupSize: Int, preferredDate: LocalDate?,
-        spots: List<String>, activities: List<String>,
-        accommodationType: AccommodationType, memo: String?
-    ): QuoteRequest {
+    fun submit(cmd: QuoteSubmitCommand): QuoteRequest {
         val quote = quoteRequestRepository.save(
             QuoteRequest(
-                customerName = customerName, phone = phone, email = email,
-                days = days, groupSize = groupSize, preferredDate = preferredDate,
-                spots = spots, activities = activities,
-                accommodationType = accommodationType, memo = memo
+                customerName = cmd.customerName, phone = cmd.phone, email = cmd.email,
+                days = cmd.days, groupSize = cmd.groupSize, preferredDate = cmd.preferredDate,
+                spots = cmd.spots, activities = cmd.activities,
+                accommodationType = AccommodationType.valueOf(cmd.accommodationType), memo = cmd.memo
             )
         )
-        eventPublisher.publishEvent(QuoteSubmittedEvent(quote.id, phone, customerName))
+        eventPublisher.publishEvent(QuoteSubmittedEvent(quote.id, cmd.phone, cmd.customerName))
         return quote
     }
 

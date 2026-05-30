@@ -1,5 +1,9 @@
 package com.gotomongol.application
 
+import com.gotomongol.application.dto.BookingCommand
+import com.gotomongol.application.dto.CalendarFile
+import com.gotomongol.application.dto.TripRegisterCommand
+import com.gotomongol.application.dto.TripResult
 import com.gotomongol.domain.event.BookingCreatedEvent
 import com.gotomongol.domain.event.TripConfirmedEvent
 import com.gotomongol.tour.domain.Booking
@@ -14,6 +18,7 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Service
 @Transactional
@@ -26,53 +31,63 @@ class TripApplication(
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
-    fun registerTrip(
-        userId: Long, quoteRequestId: Long?, tourName: String,
-        startDate: LocalDate, endDate: LocalDate, groupSize: Int,
-        spots: String, dailySchedule: String, meetingInfo: String?, guideNote: String?
-    ): ConfirmedTrip {
+    fun registerTrip(cmd: TripRegisterCommand): TripResult {
+        val user = userService.findById(cmd.userId)
         val trip = confirmedTripRepository.save(
             ConfirmedTrip(
-                userId = userId, quoteRequestId = quoteRequestId, tourName = tourName,
-                startDate = startDate, endDate = endDate, groupSize = groupSize,
-                spots = spots, dailySchedule = dailySchedule,
-                meetingInfo = meetingInfo, guideNote = guideNote
+                userId = cmd.userId, quoteRequestId = cmd.quoteRequestId,
+                tourName = cmd.tourName, startDate = cmd.startDate, endDate = cmd.endDate,
+                groupSize = cmd.groupSize, spots = cmd.spots,
+                dailySchedule = cmd.dailySchedule, meetingInfo = cmd.meetingInfo, guideNote = cmd.guideNote
             )
         )
-        // 연결된 견적 상태 변경
-        quoteRequestId?.let { qid ->
+        cmd.quoteRequestId?.let { qid ->
             quoteRequestRepository.findById(qid).ifPresent {
                 it.status = QuoteStatus.CONFIRMED
                 quoteRequestRepository.save(it)
             }
         }
-        eventPublisher.publishEvent(TripConfirmedEvent(trip.id, userId, tourName, quoteRequestId))
-        return trip
+        eventPublisher.publishEvent(TripConfirmedEvent(trip.id, cmd.userId, cmd.tourName, cmd.quoteRequestId))
+        return TripResult(trip.id, user.name, "${user.name}님 여행 등록 완료")
     }
 
-    fun createBooking(
-        customerName: String, phone: String, tourName: String,
-        startDate: LocalDate, endDate: LocalDate, groupSize: Int
-    ): Booking {
-        val overlapping = bookingRepository.findOverlapping(startDate, endDate)
+    fun createBooking(cmd: BookingCommand): Booking {
+        val overlapping = bookingRepository.findOverlapping(cmd.startDate, cmd.endDate)
         require(overlapping.isEmpty()) { "해당 기간에 이미 예약이 있습니다." }
-
-        val user = userService.findOrCreate(phone, customerName)
+        val user = userService.findOrCreate(cmd.phone, cmd.customerName)
         val booking = bookingRepository.save(
-            Booking(userId = user.id, tourName = tourName, startDate = startDate,
-                endDate = endDate, groupSize = groupSize, phone = phone, customerName = customerName)
+            Booking(userId = user.id, tourName = cmd.tourName, startDate = cmd.startDate,
+                endDate = cmd.endDate, groupSize = cmd.groupSize, phone = cmd.phone, customerName = cmd.customerName)
         )
-        eventPublisher.publishEvent(BookingCreatedEvent(booking.id, phone, customerName, tourName))
+        eventPublisher.publishEvent(BookingCreatedEvent(booking.id, cmd.phone, cmd.customerName, cmd.tourName))
         return booking
     }
 
-    fun getUnavailableDates(from: LocalDate, to: LocalDate): List<String> {
-        return bookingRepository.findByStartDateBetween(from, to).flatMap { b ->
+    fun generateCalendar(tripId: Long): CalendarFile {
+        val trip = confirmedTripRepository.findById(tripId).orElseThrow()
+        val dtStart = trip.startDate.format(DateTimeFormatter.BASIC_ISO_DATE)
+        val dtEnd = trip.endDate.plusDays(1).format(DateTimeFormatter.BASIC_ISO_DATE)
+        val ics = """
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//GoToMongol//Trip//KO
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:$dtStart
+DTEND;VALUE=DATE:$dtEnd
+SUMMARY:${trip.tourName} - 고투몽골
+DESCRIPTION:${trip.dailySchedule.replace("\n", "\\n")}
+LOCATION:몽골
+END:VEVENT
+END:VCALENDAR""".trimIndent()
+        return CalendarFile("trip-${trip.id}.ics", ics.toByteArray())
+    }
+
+    fun getUnavailableDates(from: LocalDate, to: LocalDate): List<String> =
+        bookingRepository.findByStartDateBetween(from, to).flatMap { b ->
             generateSequence(b.startDate) { it.plusDays(1) }
                 .takeWhile { !it.isAfter(b.endDate) }
                 .map { it.toString() }.toList()
         }.distinct()
-    }
 
     fun findTripsByUser(userId: Long) = confirmedTripRepository.findByUserIdOrderByStartDateDesc(userId)
     fun findTripById(id: Long) = confirmedTripRepository.findById(id).orElseThrow()
