@@ -81,6 +81,13 @@ class TripController(
         return "admin/trips"
     }
 
+    /** 어드민: 확정 여행 상세 */
+    @GetMapping("/admin/trips/{id}")
+    fun adminTripDetail(@PathVariable id: Long, model: Model): String {
+        model.addAttribute("trip", confirmedTripRepository.findById(id).orElseThrow())
+        return "admin/trip-detail"
+    }
+
     private fun buildIcs(trip: ConfirmedTrip): String {
         val dtStart = trip.startDate.format(DateTimeFormatter.BASIC_ISO_DATE)
         val dtEnd = trip.endDate.plusDays(1).format(DateTimeFormatter.BASIC_ISO_DATE)

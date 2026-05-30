@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고투몽골 어드민</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100vh; background: #16213e; padding: 2rem 1rem; }
+        .sidebar h2 { color: #ff6b35; margin-bottom: 2rem; font-size: 1.1rem; }
+        .sidebar a { display: block; color: #aaa; text-decoration: none; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 0.3rem; }
+        .sidebar a:hover, .sidebar a.active { background: #0f3460; color: white; }
+        .main { margin-left: 220px; padding: 2rem; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: #16213e; padding: 1.5rem; border-radius: 12px; }
+        .card h3 { color: #aaa; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .card .num { font-size: 2rem; font-weight: bold; color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🇲🇳 고투몽골 Admin</h2>
+        <a href="/" class="active">대시보드</a>
+        <a href="/quotes">견적 관리</a>
+        <a href="/trips">여행 관리</a>
+        <a href="/tours">투어 상품 관리</a>
+    </div>
+    <div class="main">
+        <h1 style="margin-bottom:2rem;">대시보드</h1>
+        <div class="cards">
+            <div class="card">
+                <h3>견적 요청</h3>
+                <div class="num" th:text="${quoteCount}">0</div>
+            </div>
+            <div class="card">
+                <h3>확정 여행</h3>
+                <div class="num" th:text="${tripCount}">0</div>
+            </div>
+            <div class="card">
+                <h3>등록 회원</h3>
+                <div class="num" th:text="${userCount}">0</div>
+            </div>
+            <div class="card">
+                <h3>투어 상품</h3>
+                <div class="num" th:text="${tourCount}">0</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -55,7 +55,7 @@
 
     <h2>등록된 여행</h2>
     <table>
-        <thead><tr><th>ID</th><th>유저ID</th><th>투어명</th><th>기간</th><th>인원</th><th>상태</th></tr></thead>
+        <thead><tr><th>ID</th><th>유저ID</th><th>투어명</th><th>기간</th><th>인원</th><th>상태</th><th>상세</th></tr></thead>
         <tbody>
             <tr th:each="t : ${trips}">
                 <td th:text="${t.id}">1</td>
@@ -64,6 +64,7 @@
                 <td th:text="${t.startDate} + ' ~ ' + ${t.endDate}">7/10~7/16</td>
                 <td th:text="${t.groupSize}">4</td>
                 <td th:text="${t.status}">UPCOMING</td>
+                <td><a th:href="@{/admin/trips/{id}(id=${t.id})}" style="color:#ff6b35;">보기</a></td>
             </tr>
         </tbody>
     </table>

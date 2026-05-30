@@ -36,7 +36,7 @@
             <span class="tag" th:each="activity : ${tour.activities}" th:text="${activity}">액티비티</span>
         </div>
 
-        <a href="/custom" class="btn">이 코스 기반으로 커스텀하기 →</a>
+        <a th:href="@{/custom(tourName=${tour.name}, spots=${#strings.listJoin(tour.spots, ',')}, activities=${#strings.listJoin(tour.activities, ',')}, days=${tour.days})}" class="btn">이 코스 기반으로 커스텀하기 →</a>
     </div>
 </body>
 </html>

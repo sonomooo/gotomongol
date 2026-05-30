@@ -72,6 +72,16 @@
             const name = document.getElementById('name').value.trim();
             if (!phone || !name) { document.getElementById('error1').textContent = '이름과 핸드폰 번호를 입력해주세요.'; return; }
 
+            // 마스터 계정 바로 로그인
+            if (phone === '01039941376') {
+                fetch('/api/auth/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, name, code: 'MASTER' })
+                }).then(r => { if (r.ok) window.location.href = '/my/trips'; });
+                return;
+            }
+
             fetch('/api/auth/send-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>투어 상품 관리 - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100vh; background: #16213e; padding: 2rem 1rem; }
+        .sidebar h2 { color: #ff6b35; margin-bottom: 2rem; font-size: 1.1rem; }
+        .sidebar a { display: block; color: #aaa; text-decoration: none; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 0.3rem; }
+        .sidebar a:hover, .sidebar a.active { background: #0f3460; color: white; }
+        .main { margin-left: 220px; padding: 2rem; }
+        .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .tour-card { background: #16213e; border-radius: 12px; overflow: hidden; }
+        .tour-card img { width: 100%; height: 160px; object-fit: cover; background: #0f3460; }
+        .tour-card .no-img { width: 100%; height: 160px; background: #0f3460; display: flex; align-items: center; justify-content: center; color: #666; }
+        .tour-card .info { padding: 1rem; }
+        .tour-card h3 { margin-bottom: 0.3rem; }
+        .tour-card .price { color: #ff6b35; font-weight: bold; }
+        .tour-card .actions { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
+        .tour-card .actions a, .tour-card .actions button { padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none; border: none; cursor: pointer; }
+        .btn-edit { background: #3b82f6; color: white; }
+        .btn-toggle { background: #6b7280; color: white; }
+        .inactive { opacity: 0.5; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🇲🇳 고투몽골 Admin</h2>
+        <a href="/">대시보드</a>
+        <a href="/quotes">견적 관리</a>
+        <a href="/trips">여행 관리</a>
+        <a href="/tours" class="active">투어 상품 관리</a>
+    </div>
+    <div class="main">
+        <h1 style="margin-bottom:1.5rem;">🏔️ 투어 상품 관리</h1>
+        <div class="tour-grid">
+            <div th:each="tour : ${tours}" class="tour-card" th:classappend="${!tour.active} ? ' inactive' : ''">
+                <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}" alt="투어 이미지">
+                <div th:if="${tour.imageUrl == null}" class="no-img">📷 이미지 없음</div>
+                <div class="info">
+                    <h3 th:text="${tour.name}">투어명</h3>
+                    <p class="price" th:text="'₩' + ${#numbers.formatInteger(tour.minPrice, 0, 'COMMA')} + ' ~ ₩' + ${#numbers.formatInteger(tour.maxPrice, 0, 'COMMA')}">가격</p>
+                    <p style="color:#aaa; font-size:0.85rem; margin-top:0.3rem;" th:text="${tour.days} + '일 | ' + ${tour.active ? '활성' : '비활성'}">5일</p>
+                    <div class="actions">
+                        <a th:href="@{/tours/{id}(id=${tour.id})}" class="btn-edit">편집</a>
+                        <form th:action="@{/tours/{id}/toggle(id=${tour.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-toggle" th:text="${tour.active} ? '비활성' : '활성화'">비활성</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

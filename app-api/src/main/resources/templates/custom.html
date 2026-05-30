@@ -69,9 +69,13 @@
             <div class="form-group">
                 <label>인원 *</label>
                 <select name="groupSize" required>
+                    <option value="1">1명</option>
                     <option value="2">2명</option>
+                    <option value="3">3명</option>
                     <option value="4">4명</option>
-                    <option value="6">6명 이상</option>
+                    <option value="5">5명</option>
+                    <option value="6">6명</option>
+                    <option value="7">7명 이상</option>
                 </select>
             </div>
 
@@ -107,6 +111,7 @@
                     <label><input type="checkbox" name="spots" value="미니사막"> 미니사막</label>
                     <label><input type="checkbox" name="spots" value="울란바토르 시내"> 울란바토르 시내</label>
                 </div>
+                <input type="text" name="spots" placeholder="기타 - 직접 입력" style="margin-top:0.5rem;">
             </div>
             <div class="form-group">
                 <label>하고 싶은 활동 (복수 선택)</label>
@@ -119,6 +124,7 @@
                     <label><input type="checkbox" name="activities" value="별보기/은하수"> 별보기/은하수</label>
                     <label><input type="checkbox" name="activities" value="온천"> 온천</label>
                 </div>
+                <input type="text" name="activities" placeholder="기타 - 직접 입력" style="margin-top:0.5rem;">
             </div>
             <div class="form-group">
                 <label>숙소 등급 *</label>
@@ -251,6 +257,24 @@
         }
 
         loadBookedDates();
+
+        // URL 파라미터로 전달된 코스 정보 자동 선택
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('spots')) {
+            params.get('spots').split(',').forEach(s => {
+                const cb = document.querySelector(`input[name="spots"][value="${s.trim()}"]`);
+                if (cb) cb.checked = true;
+            });
+        }
+        if (params.get('activities')) {
+            params.get('activities').split(',').forEach(a => {
+                const cb = document.querySelector(`input[name="activities"][value="${a.trim()}"]`);
+                if (cb) cb.checked = true;
+            });
+        }
+        if (params.get('days')) {
+            document.getElementById('daysSelect').value = params.get('days');
+        }
     </script>
 </body>
 </html>

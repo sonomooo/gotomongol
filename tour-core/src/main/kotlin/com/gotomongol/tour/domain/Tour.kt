@@ -6,25 +6,32 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "tours")
 class Tour(
-    val name: String,
-    val days: Int,
-    val description: String,
+    var name: String,
+    var days: Int,
+
+    @Column(columnDefinition = "TEXT")
+    var description: String,
 
     @Column(name = "min_price")
-    val minPrice: Int,
+    var minPrice: Int,
 
     @Column(name = "max_price")
-    val maxPrice: Int,
+    var maxPrice: Int,
 
     @ElementCollection
     @CollectionTable(name = "tour_spots", joinColumns = [JoinColumn(name = "tour_id")])
     @Column(name = "spot")
-    val spots: List<String> = emptyList(),
+    var spots: MutableList<String> = mutableListOf(),
 
     @ElementCollection
     @CollectionTable(name = "tour_activities", joinColumns = [JoinColumn(name = "tour_id")])
     @Column(name = "activity")
-    val activities: List<String> = emptyList(),
+    var activities: MutableList<String> = mutableListOf(),
 
-    val active: Boolean = true
+    var imageUrl: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    var detailContent: String? = null,
+
+    var active: Boolean = true
 ) : BaseEntity()
