@@ -34,8 +34,9 @@ class AuthApplication(
         return true
     }
 
-    fun loginOrRegister(phone: String, name: String): User =
-        userService.findOrCreate(phone, name)
+    fun loginOrRegister(phone: String, name: String): User {
+        return userService.findOrCreate(phone, name)
+    }
 
     fun findUserById(id: Long) = userService.findById(id)
 }

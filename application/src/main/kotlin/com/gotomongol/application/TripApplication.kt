@@ -82,12 +82,13 @@ END:VCALENDAR""".trimIndent()
         return CalendarFile("trip-${trip.id}.ics", ics.toByteArray())
     }
 
-    fun getUnavailableDates(from: LocalDate, to: LocalDate): List<String> =
-        bookingRepository.findByStartDateBetween(from, to).flatMap { b ->
+    fun getUnavailableDates(from: LocalDate, to: LocalDate): List<String> {
+        return bookingRepository.findByStartDateBetween(from, to).flatMap { b ->
             generateSequence(b.startDate) { it.plusDays(1) }
                 .takeWhile { !it.isAfter(b.endDate) }
                 .map { it.toString() }.toList()
         }.distinct()
+    }
 
     fun findTripsByUser(userId: Long) = confirmedTripRepository.findByUserIdOrderByStartDateDesc(userId)
     fun findTripById(id: Long) = confirmedTripRepository.findById(id).orElseThrow()

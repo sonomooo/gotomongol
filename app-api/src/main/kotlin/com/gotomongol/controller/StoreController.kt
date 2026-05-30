@@ -37,19 +37,29 @@ class StoreController(
     }
 
     @GetMapping("/custom")
-    fun customForm(): String = "custom"
+    fun customForm(): String {
+        return "custom"
+    }
 
     @GetMapping("/custom/complete")
-    fun customComplete(): String = "complete"
+    fun customComplete(): String {
+        return "complete"
+    }
 
     @GetMapping("/login")
-    fun loginPage(): String = "login"
+    fun loginPage(): String {
+        return "login"
+    }
 
     @GetMapping("/booking")
-    fun bookingPage(): String = "booking"
+    fun bookingPage(): String {
+        return "booking"
+    }
 
     @GetMapping("/booking/complete")
-    fun bookingComplete(): String = "booking-complete"
+    fun bookingComplete(): String {
+        return "booking-complete"
+    }
 
     @GetMapping("/my/trips")
     fun myTrips(session: HttpSession, model: Model): String {
@@ -125,8 +135,9 @@ class StoreController(
 
     @GetMapping("/api/bookings/unavailable")
     @ResponseBody
-    fun unavailableDates(@RequestParam from: LocalDate, @RequestParam to: LocalDate): ServiceResponse<List<String>> =
-        ServiceResponse.success(tripApp.getUnavailableDates(from, to))
+    fun unavailableDates(@RequestParam from: LocalDate, @RequestParam to: LocalDate): ServiceResponse<List<String>> {
+        return ServiceResponse.success(tripApp.getUnavailableDates(from, to))
+    }
 
     @PostMapping("/api/bookings")
     @ResponseBody

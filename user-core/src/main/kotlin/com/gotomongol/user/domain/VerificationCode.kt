@@ -13,6 +13,11 @@ class VerificationCode(
     var verified: Boolean = false
 ) : BaseEntity() {
 
-    fun isExpired(): Boolean = LocalDateTime.now().isAfter(expiresAt)
-    fun isValid(inputCode: String): Boolean = !isExpired() && !verified && code == inputCode
+    fun isExpired(): Boolean {
+        return LocalDateTime.now().isAfter(expiresAt)
+    }
+
+    fun isValid(inputCode: String): Boolean {
+        return !isExpired() && !verified && code == inputCode
+    }
 }

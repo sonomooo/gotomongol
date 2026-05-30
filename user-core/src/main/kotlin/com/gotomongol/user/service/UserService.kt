@@ -10,13 +10,17 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(private val userRepository: UserRepository) {
 
     @Transactional
-    fun findOrCreate(phone: String, name: String): User =
-        userRepository.findByPhone(phone) ?: userRepository.save(User(name = name, phone = phone))
+    fun findOrCreate(phone: String, name: String): User {
+        return userRepository.findByPhone(phone) ?: userRepository.save(User(name = name, phone = phone))
+    }
 
-    fun findByPhone(phone: String): User? = userRepository.findByPhone(phone)
+    fun findByPhone(phone: String): User? {
+        return userRepository.findByPhone(phone)
+    }
 
-    fun findById(id: Long): User =
-        userRepository.findById(id).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
+    fun findById(id: Long): User {
+        return userRepository.findById(id).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
+    }
 
     @Transactional
     fun update(id: Long, name: String?, email: String?): User {
