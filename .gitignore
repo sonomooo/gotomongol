@@ -38,3 +38,8 @@ out/
 
 ### OS ###
 .DS_Store
+
+### Data ###
+**/data/
+**/uploads/
+*.lock.db

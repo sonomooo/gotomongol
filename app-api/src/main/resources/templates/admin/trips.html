@@ -67,7 +67,7 @@
                     <td th:text="${t.startDate} + ' ~ ' + ${t.endDate}">7/10~7/16</td>
                     <td th:text="${t.groupSize}">4</td>
                     <td th:text="${t.status}">UPCOMING</td>
-                    <td><a th:href="@{/trips/{id}(id=${t.id})}">상세</a></td>
+                    <td><a th:href="@{/admin/trips/{id}(id=${t.id})}">상세</a></td>
                 </tr>
             </tbody>
         </table>
