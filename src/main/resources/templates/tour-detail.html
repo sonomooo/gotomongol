@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${tour.name} + ' - 몽골 투어'">투어 상세</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; color: #333; background: #f9f9f9; }
+        .container { max-width: 800px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        h1 { margin-bottom: 1rem; }
+        .meta { color: #666; margin-bottom: 1.5rem; }
+        .price { font-size: 1.5rem; color: #ff6b35; font-weight: bold; margin-bottom: 1.5rem; }
+        .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .tag { background: #f0f0f0; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; }
+        .btn { display: inline-block; padding: 1rem 2rem; background: #ff6b35; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 1.5rem; }
+        .btn:hover { background: #e55a2b; }
+        a.back { color: #666; text-decoration: none; display: block; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back">← 목록으로</a>
+        <h1 th:text="${tour.name}">투어명</h1>
+        <p class="meta" th:text="${tour.days} + '박' + (${tour.days} + 1) + '일'">4박5일</p>
+        <p class="price" th:text="'₩' + ${#numbers.formatInteger(tour.minPrice, 0, 'COMMA')} + ' ~ ₩' + ${#numbers.formatInteger(tour.maxPrice, 0, 'COMMA')}">₩800,000 ~ ₩1,000,000</p>
+        <p th:text="${tour.description}" style="margin-bottom:1.5rem;">설명</p>
+
+        <h3 style="margin-bottom:0.5rem;">방문지</h3>
+        <div class="tags">
+            <span class="tag" th:each="spot : ${tour.spots}" th:text="${spot}">스팟</span>
+        </div>
+
+        <h3 style="margin-bottom:0.5rem;">액티비티</h3>
+        <div class="tags">
+            <span class="tag" th:each="activity : ${tour.activities}" th:text="${activity}">액티비티</span>
+        </div>
+
+        <a href="/custom" class="btn">이 코스 기반으로 커스텀하기 →</a>
+    </div>
+</body>
+</html>
