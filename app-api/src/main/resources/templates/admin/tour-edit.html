@@ -38,13 +38,13 @@
         <a href="/admin/tours">← 목록</a>
         <div class="form-box" style="margin-top:1rem;">
             <h2 style="margin-bottom:1.5rem;" th:text="'✏️ ' + ${tour.name} + ' 편집'">투어 편집</h2>
-            <form th:action="@{/tours/{id}(id=${tour.id})}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/admin/tours/{id}(id=${tour.id})}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>대표 이미지</label>
-                    <div class="upload-area" onclick="document.getElementById('imageInput').click()">
-                        <p>클릭하여 이미지 업로드 (JPG, PNG)</p>
-                        <input type="file" name="image" id="imageInput" accept="image/*" style="display:none;" onchange="previewImage(this)">
-                    </div>
+                    <label for="imageInput" class="upload-area">
+                        <p>📷 클릭하여 이미지 업로드 (JPG, PNG)</p>
+                    </label>
+                    <input type="file" name="image" id="imageInput" accept="image/*" style="display:none;" onchange="previewImage(this)">
                     <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}" class="preview" id="previewImg">
                     <img th:if="${tour.imageUrl == null}" class="preview" id="previewImg" style="display:none;">
                 </div>

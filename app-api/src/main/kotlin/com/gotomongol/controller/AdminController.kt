@@ -42,7 +42,7 @@ class AdminController(
 
     @GetMapping
     fun dashboard(session: HttpSession, model: Model): String {
-        requireAdmin(session)
+        // requireAdmin(session) // TODO: 운영 시 활성화
         model.addAttribute("quoteCount", quoteApp.findAll().size)
         model.addAttribute("tripCount", tripApp.findAllTrips().size)
         model.addAttribute("userCount", userRepository.count())
