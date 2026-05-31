@@ -2,6 +2,7 @@ package com.gotomongol.controller
 
 import com.gotomongol.application.AuthApplication
 import com.gotomongol.application.QuoteApplication
+import com.gotomongol.application.ReviewApplication
 import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.BookingCommand
 import com.gotomongol.application.dto.QuoteSubmitCommand
@@ -19,7 +20,8 @@ import java.time.LocalDate
 class StoreController(
     private val quoteApp: QuoteApplication,
     private val tripApp: TripApplication,
-    private val authApp: AuthApplication
+    private val authApp: AuthApplication,
+    private val reviewApp: ReviewApplication
 ) {
 
     // ─── 페이지 라우팅 ───
@@ -155,6 +157,41 @@ class StoreController(
         } catch (e: IllegalArgumentException) {
             ServiceResponse.error(ServiceErrorType.BOOKING_CONFLICT, e.message)
         }
+    }
+
+    // ─── 후기 ───
+
+    @GetMapping("/reviews")
+    fun reviewList(model: Model): String {
+        model.addAttribute("reviews", reviewApp.findAll())
+        return "reviews"
+    }
+
+    @GetMapping("/reviews/write")
+    fun reviewForm(session: HttpSession): String {
+        val userId = session.getAttribute("userId") as? Long ?: return "redirect:/login"
+        return "review-write"
+    }
+
+    @PostMapping("/reviews")
+    fun submitReview(
+        session: HttpSession,
+        @RequestParam tourName: String,
+        @RequestParam title: String,
+        @RequestParam content: String,
+        @RequestParam rating: Int,
+        @RequestParam(required = false) imageUrls: List<String>?
+    ): String {
+        val userId = session.getAttribute("userId") as? Long ?: return "redirect:/login"
+        reviewApp.create(userId, tourName, title, content, rating, imageUrls ?: emptyList())
+        return "redirect:/reviews"
+    }
+
+    @PostMapping("/reviews/{id}/delete")
+    fun deleteReview(@PathVariable id: Long, session: HttpSession): String {
+        val userId = session.getAttribute("userId") as? Long ?: return "redirect:/login"
+        reviewApp.delete(id, userId)
+        return "redirect:/reviews"
     }
 
     // ─── API: 캘린더 ───

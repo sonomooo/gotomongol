@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>후기 - 고투몽골</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f9f9f9; padding: 2rem 1rem; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 1.5rem; }
+        .btn { padding: 0.6rem 1.2rem; background: #ff6b35; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        .review-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .review-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .review-card h3 { font-size: 1.1rem; }
+        .review-card .meta { color: #666; font-size: 0.85rem; }
+        .review-card .content { margin-top: 0.8rem; line-height: 1.6; }
+        .stars { color: #f59e0b; }
+        .images { display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap; }
+        .images img { width: 120px; height: 90px; object-fit: cover; border-radius: 6px; }
+        .empty { text-align: center; padding: 4rem; color: #999; }
+        .nav { margin-bottom: 2rem; }
+        .nav a { color: #666; text-decoration: none; margin-right: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav"><a href="/">← 홈</a></div>
+        <div class="header">
+            <h1>✍️ 여행 후기</h1>
+            <a href="/reviews/write" class="btn">후기 작성</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(reviews)}" class="empty">
+            <p>아직 후기가 없습니다. 첫 후기를 남겨보세요!</p>
+        </div>
+
+        <div th:each="r : ${reviews}" class="review-card">
+            <div class="top">
+                <h3 th:text="${r.title}">제목</h3>
+                <span class="stars" th:text="${'★'.repeat(r.rating) + '☆'.repeat(5 - r.rating)}">★★★★★</span>
+            </div>
+            <p class="meta" th:text="${r.tourName}">홉스골 프리미엄</p>
+            <div class="content" th:text="${r.content}">후기 내용</div>
+            <div class="images" th:if="${!r.imageUrls.isEmpty()}">
+                <img th:each="img : ${r.imageUrls}" th:src="${img}">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

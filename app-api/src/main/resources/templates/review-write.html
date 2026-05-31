@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>후기 작성 - 고투몽골</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f9f9f9; padding: 2rem 1rem; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        h1 { text-align: center; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-weight: bold; margin-bottom: 0.4rem; }
+        input, select, textarea { width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        textarea { resize: vertical; }
+        .stars-input { display: flex; gap: 0.3rem; font-size: 1.5rem; cursor: pointer; }
+        .stars-input span { color: #ddd; }
+        .stars-input span.active { color: #f59e0b; }
+        .btn { display: block; width: 100%; padding: 1rem; background: #ff6b35; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: #e55a2b; }
+        a { color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/reviews">← 후기 목록</a>
+        <h1>✍️ 후기 작성</h1>
+        <form method="post" action="/reviews">
+            <div class="form-group">
+                <label>투어 코스</label>
+                <select name="tourName" required>
+                    <option value="초원 힐링 코스">초원 힐링 코스</option>
+                    <option value="고비사막 어드벤처">고비사막 어드벤처</option>
+                    <option value="홉스골 프리미엄">홉스골 프리미엄</option>
+                    <option value="몽골 완전정복">몽골 완전정복</option>
+                    <option value="커스텀 투어">커스텀 투어</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>제목</label>
+                <input type="text" name="title" required placeholder="한 줄로 여행을 표현해주세요">
+            </div>
+            <div class="form-group">
+                <label>별점</label>
+                <div class="stars-input" id="starsInput">
+                    <span onclick="setRating(1)">★</span>
+                    <span onclick="setRating(2)">★</span>
+                    <span onclick="setRating(3)">★</span>
+                    <span onclick="setRating(4)">★</span>
+                    <span onclick="setRating(5)">★</span>
+                </div>
+                <input type="hidden" name="rating" id="ratingInput" value="5">
+            </div>
+            <div class="form-group">
+                <label>후기 내용</label>
+                <textarea name="content" rows="6" required placeholder="여행 경험을 자유롭게 적어주세요"></textarea>
+            </div>
+            <button type="submit" class="btn">후기 등록</button>
+        </form>
+    </div>
+    <script>
+        setRating(5);
+        function setRating(n) {
+            document.getElementById('ratingInput').value = n;
+            document.querySelectorAll('.stars-input span').forEach((s, i) => {
+                s.classList.toggle('active', i < n);
+            });
+        }
+    </script>
+</body>
+</html>
