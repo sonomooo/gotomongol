@@ -3,13 +3,14 @@ package com.gotomongol.controller
 import com.gotomongol.application.QuoteApplication
 import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.TripRegisterCommand
+import com.gotomongol.domain.port.SiteConfigPort
+import com.gotomongol.domain.port.TourPort
+import com.gotomongol.domain.port.UserPort
 import com.gotomongol.domain.response.ServiceResponse
-import com.gotomongol.tour.domain.QuoteStatus
-import com.gotomongol.tour.domain.SiteConfig
-import com.gotomongol.tour.domain.Tour
-import com.gotomongol.tour.repository.SiteConfigRepository
-import com.gotomongol.tour.repository.TourRepository
-import com.gotomongol.user.repository.UserRepository
+import com.gotomongol.domain.tour.QuoteStatus
+import com.gotomongol.domain.tour.SiteConfig
+import com.gotomongol.domain.tour.Tour
+import com.gotomongol.domain.user.UserRole
 import jakarta.servlet.http.HttpSession
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
@@ -26,30 +27,20 @@ import java.util.*
 class AdminController(
     private val quoteApp: QuoteApplication,
     private val tripApp: TripApplication,
-    private val tourRepository: TourRepository,
-    private val siteConfigRepository: SiteConfigRepository,
-    private val userRepository: UserRepository,
+    private val tourPort: TourPort,
+    private val siteConfigPort: SiteConfigPort,
+    private val userPort: UserPort,
     @Value("\${upload.path:./uploads}") private val uploadPath: String
 ) {
-
-    private fun requireAdmin(session: HttpSession) {
-        val userId = session.getAttribute("userId") as? Long
-            ?: throw IllegalStateException("LOGIN_REQUIRED")
-        val user = userRepository.findById(userId).orElseThrow()
-        if (user.role != com.gotomongol.user.domain.UserRole.ADMIN) {
-            throw IllegalStateException("ADMIN_ONLY")
-        }
-    }
 
     // ─── 대시보드 ───
 
     @GetMapping
     fun dashboard(session: HttpSession, model: Model): String {
-        // requireAdmin(session) // TODO: 운영 시 활성화
         model.addAttribute("quoteCount", quoteApp.findAll().size)
         model.addAttribute("tripCount", tripApp.findAllTrips().size)
-        model.addAttribute("userCount", userRepository.count())
-        model.addAttribute("tourCount", tourRepository.count())
+        model.addAttribute("userCount", userPort.count())
+        model.addAttribute("tourCount", tourPort.count())
         return "admin/dashboard"
     }
 
@@ -107,7 +98,7 @@ class AdminController(
 
     @GetMapping("/tours")
     fun listTours(model: Model): String {
-        model.addAttribute("tours", tourRepository.findAll())
+        model.addAttribute("tours", tourPort.findAll())
         return "admin/tours"
     }
 
@@ -119,18 +110,20 @@ class AdminController(
         @RequestParam(required = false) activities: String?,
         @RequestParam(required = false) image: MultipartFile?
     ): String {
-        val tour = Tour(name = name, days = days, description = description,
+        val imageUrl = if (image != null && !image.isEmpty) saveFile(image) else null
+        tourPort.save(Tour(
+            name = name, days = days, description = description,
             minPrice = minPrice, maxPrice = maxPrice,
-            spots = spots?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }?.toMutableList() ?: mutableListOf(),
-            activities = activities?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }?.toMutableList() ?: mutableListOf())
-        if (image != null && !image.isEmpty) tour.imageUrl = saveFile(image)
-        tourRepository.save(tour)
+            spots = spots?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList(),
+            activities = activities?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList(),
+            imageUrl = imageUrl
+        ))
         return "redirect:/admin/tours"
     }
 
     @GetMapping("/tours/{id}")
     fun editTour(@PathVariable id: Long, model: Model): String {
-        model.addAttribute("tour", tourRepository.findById(id).orElseThrow())
+        model.addAttribute("tour", tourPort.findById(id) ?: throw IllegalArgumentException("투어를 찾을 수 없습니다."))
         return "admin/tour-edit"
     }
 
@@ -143,23 +136,25 @@ class AdminController(
         @RequestParam(required = false) image: MultipartFile?,
         @RequestParam(required = false) images: List<MultipartFile>?
     ): String {
-        val tour = tourRepository.findById(id).orElseThrow()
-        tour.name = name; tour.days = days; tour.description = description
-        tour.minPrice = minPrice; tour.maxPrice = maxPrice
-        tour.spots = spots.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
-        tour.activities = activities.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
-        tour.detailContent = detailContent
-        if (image != null && !image.isEmpty) tour.imageUrl = saveFile(image)
-        images?.filter { !it.isEmpty }?.forEach { tour.imageUrls.add(saveFile(it)) }
-        tourRepository.save(tour)
+        val existing = tourPort.findById(id) ?: throw IllegalArgumentException("투어를 찾을 수 없습니다.")
+        val newImageUrl = if (image != null && !image.isEmpty) saveFile(image) else existing.imageUrl
+        val newImageUrls = existing.imageUrls.toMutableList()
+        images?.filter { !it.isEmpty }?.forEach { newImageUrls.add(saveFile(it)) }
+
+        tourPort.save(existing.copy(
+            name = name, days = days, description = description,
+            minPrice = minPrice, maxPrice = maxPrice,
+            spots = spots.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+            activities = activities.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+            detailContent = detailContent, imageUrl = newImageUrl, imageUrls = newImageUrls
+        ))
         return "redirect:/admin/tours"
     }
 
     @PostMapping("/tours/{id}/toggle")
     fun toggleTour(@PathVariable id: Long): String {
-        val tour = tourRepository.findById(id).orElseThrow()
-        tour.active = !tour.active
-        tourRepository.save(tour)
+        val tour = tourPort.findById(id) ?: throw IllegalArgumentException("투어를 찾을 수 없습니다.")
+        tourPort.save(tour.copy(active = !tour.active))
         return "redirect:/admin/tours"
     }
 
@@ -167,7 +162,7 @@ class AdminController(
 
     @GetMapping("/site")
     fun siteSettings(model: Model): String {
-        val configs = siteConfigRepository.findAll().associateBy { it.configKey }
+        val configs = siteConfigPort.findAll().associateBy { it.configKey }
         model.addAttribute("configs", configs)
         return "admin/site"
     }
@@ -180,9 +175,7 @@ class AdminController(
         @RequestParam(required = false) aboutText: String?,
         @RequestParam(required = false) kakaoLink: String?
     ): String {
-        if (heroImage != null && !heroImage.isEmpty) {
-            saveConfig("heroImage", saveFile(heroImage))
-        }
+        if (heroImage != null && !heroImage.isEmpty) saveConfig("heroImage", saveFile(heroImage))
         slogan?.let { saveConfig("slogan", it) }
         subText?.let { saveConfig("subText", it) }
         aboutText?.let { saveConfig("aboutText", it) }
@@ -191,12 +184,11 @@ class AdminController(
     }
 
     private fun saveConfig(key: String, value: String) {
-        val config = siteConfigRepository.findByConfigKey(key)
-        if (config != null) {
-            config.configValue = value
-            siteConfigRepository.save(config)
+        val existing = siteConfigPort.findByKey(key)
+        if (existing != null) {
+            siteConfigPort.save(existing.copy(configValue = value))
         } else {
-            siteConfigRepository.save(SiteConfig(configKey = key, configValue = value))
+            siteConfigPort.save(SiteConfig(configKey = key, configValue = value))
         }
     }
 

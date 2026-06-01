@@ -3,7 +3,10 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":domain"))
     implementation(project(":application"))
+    implementation(project(":infra-persistence"))
+    implementation(project(":user-core"))
     implementation(project(":core-notification"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")

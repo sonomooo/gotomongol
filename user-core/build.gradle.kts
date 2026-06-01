@@ -1,3 +1,5 @@
 dependencies {
-    api(project(":core-domain"))
+    api(project(":domain"))
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-tx")
 }

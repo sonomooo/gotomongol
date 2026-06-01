@@ -8,8 +8,8 @@ import com.gotomongol.application.dto.BookingCommand
 import com.gotomongol.application.dto.QuoteSubmitCommand
 import com.gotomongol.domain.response.ServiceErrorType
 import com.gotomongol.domain.response.ServiceResponse
-import com.gotomongol.tour.repository.SiteConfigRepository
-import com.gotomongol.user.dto.UserResponse
+import com.gotomongol.domain.port.SiteConfigPort
+import com.gotomongol.domain.user.User
 import jakarta.servlet.http.HttpSession
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -23,7 +23,7 @@ class StoreController(
     private val tripApp: TripApplication,
     private val authApp: AuthApplication,
     private val reviewApp: ReviewApplication,
-    private val siteConfigRepository: SiteConfigRepository
+    private val siteConfigPort: SiteConfigPort
 ) {
 
     // ─── 페이지 라우팅 ───
@@ -31,7 +31,7 @@ class StoreController(
     @GetMapping("/")
     fun home(model: Model): String {
         model.addAttribute("tours", tripApp.findActiveTours())
-        val configs = siteConfigRepository.findAll().associateBy { it.configKey }
+        val configs = siteConfigPort.findAll().associateBy { it.configKey }
         model.addAttribute("site", configs.mapValues { it.value.configValue })
         return "index"
     }
@@ -111,14 +111,14 @@ class StoreController(
 
     @PostMapping("/api/auth/verify")
     @ResponseBody
-    fun verify(@RequestBody body: Map<String, String>, session: HttpSession): ServiceResponse<UserResponse> {
+    fun verify(@RequestBody body: Map<String, String>, session: HttpSession): ServiceResponse<User> {
         val phone = body["phone"]!!
         val code = body["code"]!!
         val name = body["name"] ?: ""
         if (!authApp.verify(phone, code)) return ServiceResponse.error(ServiceErrorType.VERIFICATION_FAILED)
         val user = authApp.loginOrRegister(phone, name)
         session.setAttribute("userId", user.id)
-        return ServiceResponse.success(UserResponse(user.id, user.name, user.phone, user.email, user.role.name))
+        return ServiceResponse.success(user)
     }
 
     @PostMapping("/api/auth/logout")
@@ -130,11 +130,11 @@ class StoreController(
 
     @GetMapping("/api/auth/me")
     @ResponseBody
-    fun me(session: HttpSession): ServiceResponse<UserResponse> {
+    fun me(session: HttpSession): ServiceResponse<User> {
         val userId = session.getAttribute("userId") as? Long
             ?: return ServiceResponse.error(ServiceErrorType.UNAUTHORIZED)
         val user = authApp.findUserById(userId)
-        return ServiceResponse.success(UserResponse(user.id, user.name, user.phone, user.email, user.role.name))
+        return ServiceResponse.success(user)
     }
 
     // ─── API: 예약 ───

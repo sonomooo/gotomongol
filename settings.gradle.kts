@@ -1,9 +1,10 @@
 rootProject.name = "gotomongol"
 
-include("core-domain")
-include("core-notification")
+include("domain")
+include("infra-persistence")
 include("user-core")
 include("tour-core")
 include("review-core")
+include("core-notification")
 include("application")
 include("app-api")

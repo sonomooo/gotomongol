@@ -1,3 +1,3 @@
 dependencies {
-    api(project(":core-domain"))
+    api(project(":domain"))
 }
