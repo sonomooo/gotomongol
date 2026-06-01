@@ -36,23 +36,27 @@
 <body>
     <nav style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
         <a href="/" style="font-weight:bold; font-size:1.2rem; color:#ff6b35; text-decoration:none;">🇲🇳 고투몽골</a>
-        <div style="display:flex; gap:1.5rem; font-size:0.95rem;">
-            <a href="/custom" style="color:#333; text-decoration:none;">견적 요청</a>
-            <a href="/my/trips" style="color:#333; text-decoration:none;">내 여행</a>
-            <a href="/login" style="color:#ff6b35; text-decoration:none; font-weight:bold;">로그인</a>
+        <div style="display:flex; gap:1.5rem; font-size:0.95rem; align-items:center;">
+            <a href="/custom" style="color:#333; text-decoration:none;" th:text="#{nav.quote}">견적 요청</a>
+            <a href="/my/trips" style="color:#333; text-decoration:none;" th:text="#{nav.mytrips}">내 여행</a>
+            <a href="/reviews" style="color:#333; text-decoration:none;" th:text="#{nav.reviews}">후기</a>
+            <a href="/login" style="color:#ff6b35; text-decoration:none; font-weight:bold;" th:text="#{nav.login}">로그인</a>
+            <span style="color:#ccc;">|</span>
+            <a href="?lang=ko" style="color:#333; text-decoration:none; font-size:0.85rem;">🇰🇷</a>
+            <a href="?lang=mn" style="color:#333; text-decoration:none; font-size:0.85rem;">🇲🇳</a>
         </div>
     </nav>
 
     <div class="hero" th:style="'height:70vh; background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4))' + (${site['heroImage'] != null} ? ',url(' + ${site['heroImage']} + ')' : '') + ' center/cover; display:flex; align-items:center; justify-content:center; text-align:center; color:white;'">
         <div>
-            <h1 th:text="${site['slogan'] ?: '나만의 몽골 여행을 설계하세요'}">나만의 몽골 여행을 설계하세요</h1>
-            <p th:text="${site['subText'] ?: '정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어'}">정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어</p>
-            <a href="/custom" class="btn">커스텀 투어 만들기 →</a>
+            <h1 th:text="${site['slogan'] ?: #messages.msg('hero.slogan')}">나만의 몽골 여행을 설계하세요</h1>
+            <p th:text="${site['subText'] ?: #messages.msg('hero.sub')}">정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어</p>
+            <a href="/custom" class="btn" th:text="#{hero.cta}">커스텀 투어 만들기 →</a>
         </div>
     </div>
 
     <div class="section">
-        <h2>추천 코스</h2>
+        <h2 th:text="#{tour.recommended}">추천 코스</h2>
         <div class="tour-grid">
             <div class="tour-card" th:each="tour : ${tours}">
                 <a th:href="@{/tours/{id}(id=${tour.id})}">
@@ -67,7 +71,7 @@
                 </a>
             </div>
         </div>
-        <p style="text-align:center; margin-top:2rem; color:#666;">모든 추천 코스는 커스텀 변경 가능합니다</p>
+        <p style="text-align:center; margin-top:2rem; color:#666;" th:text="#{tour.customizable}">모든 추천 코스는 커스텀 변경 가능합니다</p>
     </div>
 </body>
 </html>
