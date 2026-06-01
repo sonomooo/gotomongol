@@ -43,6 +43,12 @@
         .btn:hover { background: #e55a2b; }
         .btn:disabled { background: #ccc; cursor: not-allowed; }
         a.back { color: #666; text-decoration: none; display: block; text-align: center; margin-top: 1rem; }
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .calendar-wrap { padding: 1rem; }
+            h1 { font-size: 1.3rem; }
+        }
     </style>
 </head>
 <body>
