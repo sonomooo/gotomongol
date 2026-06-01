@@ -16,9 +16,21 @@
         .card { background: #16213e; padding: 1.5rem; border-radius: 12px; }
         .card h3 { color: #aaa; font-size: 0.85rem; margin-bottom: 0.5rem; }
         .card .num { font-size: 2rem; font-weight: bold; color: #ff6b35; }
+            @media (max-width: 768px) {
+            .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
+            .sidebar.open { display: block; }
+            .main { margin-left: 0; padding: 1rem; }
+            .hamburger { display: block; position: fixed; top: 1rem; right: 1rem; z-index: 101; background: #ff6b35; color: white; border: none; border-radius: 6px; padding: 0.5rem 0.8rem; font-size: 1.2rem; cursor: pointer; }
+            table { font-size: 0.8rem; }
+            .form-row { grid-template-columns: 1fr !important; }
+            .tour-grid { grid-template-columns: 1fr !important; }
+            .cards { grid-template-columns: 1fr !important; }
+        }
+        .hamburger { display: none; }
     </style>
 </head>
 <body>
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
     <div class="sidebar">
         <h2>🇲🇳 고투몽골 Admin</h2>
         <a href="/admin" class="active">대시보드</a>

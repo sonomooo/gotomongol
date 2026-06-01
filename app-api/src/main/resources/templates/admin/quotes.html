@@ -21,9 +21,21 @@
         .status-CANCELLED { color: #ef4444; }
         select, button { padding: 0.3rem 0.5rem; border-radius: 4px; border: none; }
         button { background: #ff6b35; color: white; cursor: pointer; }
+            @media (max-width: 768px) {
+            .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
+            .sidebar.open { display: block; }
+            .main { margin-left: 0; padding: 1rem; }
+            .hamburger { display: block; position: fixed; top: 1rem; right: 1rem; z-index: 101; background: #ff6b35; color: white; border: none; border-radius: 6px; padding: 0.5rem 0.8rem; font-size: 1.2rem; cursor: pointer; }
+            table { font-size: 0.8rem; }
+            .form-row { grid-template-columns: 1fr !important; }
+            .tour-grid { grid-template-columns: 1fr !important; }
+            .cards { grid-template-columns: 1fr !important; }
+        }
+        .hamburger { display: none; }
     </style>
 </head>
 <body>
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
     <div class="sidebar">
         <h2>🇲🇳 고투몽골 Admin</h2>
         <a href="/admin">대시보드</a>
@@ -41,7 +53,18 @@
             <a href="/admin/quotes?status=CONFIRMED" th:classappend="${currentStatus == 'CONFIRMED'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#10b981; border:1px solid #0f3460;">확정</a>
             <a href="/admin/quotes?status=CANCELLED" th:classappend="${currentStatus == 'CANCELLED'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#ef4444; border:1px solid #0f3460;">취소</a>
         </div>
-        <style>.active { background: #0f3460 !important; color: white !important; }</style>
+        <style>.active { background: #0f3460 !important; color: white !important; }        @media (max-width: 768px) {
+            .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
+            .sidebar.open { display: block; }
+            .main { margin-left: 0; padding: 1rem; }
+            .hamburger { display: block; position: fixed; top: 1rem; right: 1rem; z-index: 101; background: #ff6b35; color: white; border: none; border-radius: 6px; padding: 0.5rem 0.8rem; font-size: 1.2rem; cursor: pointer; }
+            table { font-size: 0.8rem; }
+            .form-row { grid-template-columns: 1fr !important; }
+            .tour-grid { grid-template-columns: 1fr !important; }
+            .cards { grid-template-columns: 1fr !important; }
+        }
+        .hamburger { display: none; }
+    </style>
         <table>
             <thead><tr><th>ID</th><th>이름</th><th>연락처</th><th>일수</th><th>인원</th><th>스팟</th><th>숙소</th><th>메모</th><th>상태</th><th>변경</th></tr></thead>
             <tbody>
