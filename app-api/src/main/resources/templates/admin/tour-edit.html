@@ -42,10 +42,7 @@
             <form th:action="@{/admin/tours/{id}(id=${tour.id})}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>대표 이미지</label>
-                    <label for="imageInput" class="upload-area">
-                        <p>📷 클릭하여 이미지 업로드 (JPG, PNG)</p>
-                    </label>
-                    <input type="file" name="image" id="imageInput" accept="image/*" style="display:none;" onchange="previewImage(this)">
+                    <input type="file" name="image" id="imageInput" accept="image/*" onchange="previewImage(this)" style="width:100%; padding:0.6rem; border:1px solid #0f3460; border-radius:4px; background:#1a1a2e; color:#eee;">
                     <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}" class="preview" id="previewImg">
                     <img th:if="${tour.imageUrl == null}" class="preview" id="previewImg" style="display:none;">
                 </div>
