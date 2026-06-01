@@ -34,10 +34,10 @@
         </div>
     </nav>
 
-    <div class="hero">
+    <div class="hero" th:style="'height:70vh; background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4))' + (${site['heroImage'] != null} ? ',url(' + ${site['heroImage']} + ')' : '') + ' center/cover; display:flex; align-items:center; justify-content:center; text-align:center; color:white;'">
         <div>
-            <h1>나만의 몽골 여행을 설계하세요</h1>
-            <p>정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어</p>
+            <h1 th:text="${site['slogan'] ?: '나만의 몽골 여행을 설계하세요'}">나만의 몽골 여행을 설계하세요</h1>
+            <p th:text="${site['subText'] ?: '정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어'}">정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어</p>
             <a href="/custom" class="btn">커스텀 투어 만들기 →</a>
         </div>
     </div>

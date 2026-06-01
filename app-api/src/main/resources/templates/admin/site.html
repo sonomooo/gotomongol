@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사이트 설정 - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100vh; background: #16213e; padding: 2rem 1rem; }
+        .sidebar h2 { color: #ff6b35; margin-bottom: 2rem; font-size: 1.1rem; }
+        .sidebar a { display: block; color: #aaa; text-decoration: none; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 0.3rem; }
+        .sidebar a:hover, .sidebar a.active { background: #0f3460; color: white; }
+        .main { margin-left: 220px; padding: 2rem; max-width: 800px; }
+        .form-box { background: #16213e; padding: 2rem; border-radius: 8px; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 0.4rem; font-weight: bold; }
+        input, textarea { width: 100%; padding: 0.6rem; border: 1px solid #0f3460; border-radius: 4px; background: #1a1a2e; color: #eee; font-size: 0.95rem; }
+        textarea { resize: vertical; }
+        .btn { padding: 0.8rem 2rem; background: #ff6b35; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+        .btn:hover { background: #e55a2b; }
+        .preview { max-width: 400px; border-radius: 8px; margin-top: 0.5rem; }
+        .hint { color: #666; font-size: 0.8rem; margin-top: 0.3rem; }
+        .success { background: #064e3b; padding: 0.8rem; border-radius: 4px; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🇲🇳 고투몽골 Admin</h2>
+        <a href="/admin">대시보드</a>
+        <a href="/admin/quotes">견적 관리</a>
+        <a href="/admin/trips">여행 관리</a>
+        <a href="/admin/tours">투어 상품 관리</a>
+        <a href="/admin/site" class="active">사이트 설정</a>
+    </div>
+    <div class="main">
+        <h1 style="margin-bottom:1.5rem;">🎨 사이트 설정</h1>
+        <div class="form-box">
+            <form action="/admin/site" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>히어로 배경 이미지</label>
+                    <input type="file" name="heroImage" accept="image/*">
+                    <img th:if="${configs['heroImage'] != null}" th:src="${configs['heroImage'].configValue}" class="preview">
+                    <p class="hint">메인 페이지 상단 배경 이미지 (1920x800 권장)</p>
+                </div>
+                <div class="form-group">
+                    <label>메인 슬로건</label>
+                    <input type="text" name="slogan" th:value="${configs['slogan'] != null} ? ${configs['slogan'].configValue} : '나만의 몽골 여행을 설계하세요'">
+                    <p class="hint">메인 페이지 히어로 영역 큰 글씨</p>
+                </div>
+                <div class="form-group">
+                    <label>서브 텍스트</label>
+                    <input type="text" name="subText" th:value="${configs['subText'] != null} ? ${configs['subText'].configValue} : '정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어'">
+                    <p class="hint">슬로건 아래 작은 글씨</p>
+                </div>
+                <div class="form-group">
+                    <label>회사 소개</label>
+                    <textarea name="aboutText" rows="4" th:text="${configs['aboutText'] != null} ? ${configs['aboutText'].configValue} : ''"></textarea>
+                    <p class="hint">회사 소개 페이지에 표시될 내용</p>
+                </div>
+                <div class="form-group">
+                    <label>카카오톡 채널 링크</label>
+                    <input type="text" name="kakaoLink" th:value="${configs['kakaoLink'] != null} ? ${configs['kakaoLink'].configValue} : ''" placeholder="https://pf.kakao.com/...">
+                    <p class="hint">문의하기 버튼 클릭 시 이동할 카카오톡 채널 URL</p>
+                </div>
+                <button type="submit" class="btn">저장</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

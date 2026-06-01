@@ -8,6 +8,7 @@ import com.gotomongol.application.dto.BookingCommand
 import com.gotomongol.application.dto.QuoteSubmitCommand
 import com.gotomongol.domain.response.ServiceErrorType
 import com.gotomongol.domain.response.ServiceResponse
+import com.gotomongol.tour.repository.SiteConfigRepository
 import com.gotomongol.user.dto.UserResponse
 import jakarta.servlet.http.HttpSession
 import org.springframework.http.ResponseEntity
@@ -21,7 +22,8 @@ class StoreController(
     private val quoteApp: QuoteApplication,
     private val tripApp: TripApplication,
     private val authApp: AuthApplication,
-    private val reviewApp: ReviewApplication
+    private val reviewApp: ReviewApplication,
+    private val siteConfigRepository: SiteConfigRepository
 ) {
 
     // ─── 페이지 라우팅 ───
@@ -29,6 +31,8 @@ class StoreController(
     @GetMapping("/")
     fun home(model: Model): String {
         model.addAttribute("tours", tripApp.findActiveTours())
+        val configs = siteConfigRepository.findAll().associateBy { it.configKey }
+        model.addAttribute("site", configs.mapValues { it.value.configValue })
         return "index"
     }
 

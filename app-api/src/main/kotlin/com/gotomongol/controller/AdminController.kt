@@ -5,7 +5,9 @@ import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.TripRegisterCommand
 import com.gotomongol.domain.response.ServiceResponse
 import com.gotomongol.tour.domain.QuoteStatus
+import com.gotomongol.tour.domain.SiteConfig
 import com.gotomongol.tour.domain.Tour
+import com.gotomongol.tour.repository.SiteConfigRepository
 import com.gotomongol.tour.repository.TourRepository
 import com.gotomongol.user.repository.UserRepository
 import jakarta.servlet.http.HttpSession
@@ -25,6 +27,7 @@ class AdminController(
     private val quoteApp: QuoteApplication,
     private val tripApp: TripApplication,
     private val tourRepository: TourRepository,
+    private val siteConfigRepository: SiteConfigRepository,
     private val userRepository: UserRepository,
     @Value("\${upload.path:./uploads}") private val uploadPath: String
 ) {
@@ -155,6 +158,43 @@ class AdminController(
         tour.active = !tour.active
         tourRepository.save(tour)
         return "redirect:/admin/tours"
+    }
+
+    // ─── 사이트 설정 ───
+
+    @GetMapping("/site")
+    fun siteSettings(model: Model): String {
+        val configs = siteConfigRepository.findAll().associateBy { it.configKey }
+        model.addAttribute("configs", configs)
+        return "admin/site"
+    }
+
+    @PostMapping("/site")
+    fun updateSiteSettings(
+        @RequestParam heroImage: MultipartFile?,
+        @RequestParam(required = false) slogan: String?,
+        @RequestParam(required = false) subText: String?,
+        @RequestParam(required = false) aboutText: String?,
+        @RequestParam(required = false) kakaoLink: String?
+    ): String {
+        if (heroImage != null && !heroImage.isEmpty) {
+            saveConfig("heroImage", saveFile(heroImage))
+        }
+        slogan?.let { saveConfig("slogan", it) }
+        subText?.let { saveConfig("subText", it) }
+        aboutText?.let { saveConfig("aboutText", it) }
+        kakaoLink?.let { saveConfig("kakaoLink", it) }
+        return "redirect:/admin/site"
+    }
+
+    private fun saveConfig(key: String, value: String) {
+        val config = siteConfigRepository.findByConfigKey(key)
+        if (config != null) {
+            config.configValue = value
+            siteConfigRepository.save(config)
+        } else {
+            siteConfigRepository.save(SiteConfig(configKey = key, configValue = value))
+        }
     }
 
     private fun saveFile(file: MultipartFile): String {
