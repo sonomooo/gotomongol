@@ -198,6 +198,21 @@ class StoreController(
         return "redirect:/reviews"
     }
 
+    // ─── API: 견적 계산 ───
+
+    @PostMapping("/api/estimate")
+    @ResponseBody
+    fun estimate(@RequestBody body: Map<String, Any>): ServiceResponse<Map<String, Any>> {
+        val result = quoteApp.estimate(
+            days = (body["days"] as Number).toInt(),
+            groupSize = (body["groupSize"] as Number).toInt(),
+            spots = (body["spots"] as? List<*>)?.map { it.toString() } ?: emptyList(),
+            activities = (body["activities"] as? List<*>)?.map { it.toString() } ?: emptyList(),
+            accommodation = body["accommodation"] as? String ?: "CAMP"
+        )
+        return ServiceResponse.success(result)
+    }
+
     // ─── API: 캘린더 ───
 
     @GetMapping("/my/trips/{id}/calendar")

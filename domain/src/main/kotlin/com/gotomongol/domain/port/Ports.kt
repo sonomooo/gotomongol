@@ -62,3 +62,10 @@ interface ReviewPort {
     fun findByUserId(userId: Long): List<Review>
     fun findById(id: Long): Review?
 }
+
+interface PriceConfigPort {
+    fun findAll(): List<PriceConfig>
+    fun findByCategory(category: PriceCategory): List<PriceConfig>
+    fun save(config: PriceConfig): PriceConfig
+    fun deleteById(id: Long)
+}

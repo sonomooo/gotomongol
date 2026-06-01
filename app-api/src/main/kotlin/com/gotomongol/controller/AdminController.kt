@@ -183,6 +183,33 @@ class AdminController(
         return "redirect:/admin/site"
     }
 
+    // ─── 가격 설정 ───
+
+    @GetMapping("/pricing")
+    fun pricingPage(model: Model): String {
+        model.addAttribute("configs", quoteApp.getAllPriceConfigs())
+        return "admin/pricing"
+    }
+
+    @PostMapping("/pricing")
+    @ResponseBody
+    fun savePricing(@RequestBody body: Map<String, Any>): ServiceResponse<Nothing> {
+        quoteApp.savePriceConfig(com.gotomongol.domain.tour.PriceConfig(
+            id = (body["id"] as? Number)?.toLong() ?: 0,
+            category = com.gotomongol.domain.tour.PriceCategory.valueOf(body["category"] as String),
+            itemName = body["itemName"] as String,
+            pricePerUnit = (body["pricePerUnit"] as Number).toInt(),
+            unit = body["unit"] as? String ?: "1일"
+        ))
+        return ServiceResponse.success()
+    }
+
+    @PostMapping("/pricing/{id}/delete")
+    fun deletePricing(@PathVariable id: Long): String {
+        quoteApp.deletePriceConfig(id)
+        return "redirect:/admin/pricing"
+    }
+
     private fun saveConfig(key: String, value: String) {
         val existing = siteConfigPort.findByKey(key)
         if (existing != null) {
