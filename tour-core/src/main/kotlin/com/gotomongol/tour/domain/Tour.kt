@@ -30,6 +30,11 @@ class Tour(
 
     var imageUrl: String? = null,
 
+    @ElementCollection
+    @CollectionTable(name = "tour_images", joinColumns = [JoinColumn(name = "tour_id")])
+    @Column(name = "image_url")
+    var imageUrls: MutableList<String> = mutableListOf(),
+
     @Column(columnDefinition = "TEXT")
     var detailContent: String? = null,
 

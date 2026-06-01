@@ -139,7 +139,8 @@ class AdminController(
         @RequestParam description: String, @RequestParam minPrice: Int,
         @RequestParam maxPrice: Int, @RequestParam spots: String,
         @RequestParam activities: String, @RequestParam(required = false) detailContent: String?,
-        @RequestParam(required = false) image: MultipartFile?
+        @RequestParam(required = false) image: MultipartFile?,
+        @RequestParam(required = false) images: List<MultipartFile>?
     ): String {
         val tour = tourRepository.findById(id).orElseThrow()
         tour.name = name; tour.days = days; tour.description = description
@@ -148,6 +149,7 @@ class AdminController(
         tour.activities = activities.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
         tour.detailContent = detailContent
         if (image != null && !image.isEmpty) tour.imageUrl = saveFile(image)
+        images?.filter { !it.isEmpty }?.forEach { tour.imageUrls.add(saveFile(it)) }
         tourRepository.save(tour)
         return "redirect:/admin/tours"
     }
