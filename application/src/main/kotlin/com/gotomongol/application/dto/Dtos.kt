@@ -28,7 +28,9 @@ data class BookingCommand(
 
 // ─── 여행 등록 ───
 data class TripRegisterCommand(
-    val userId: Long,
+    val userId: Long = 0,
+    val phone: String? = null,
+    val customerName: String? = null,
     val quoteRequestId: Long?,
     val tourName: String,
     val startDate: LocalDate,

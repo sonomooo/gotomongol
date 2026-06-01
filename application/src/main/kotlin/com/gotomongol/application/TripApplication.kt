@@ -32,10 +32,14 @@ class TripApplication(
 ) {
 
     fun registerTrip(cmd: TripRegisterCommand): TripResult {
-        val user = userService.findById(cmd.userId)
+        val user = if (cmd.phone != null) {
+            userService.findOrCreate(cmd.phone, cmd.customerName ?: "")
+        } else {
+            userService.findById(cmd.userId)
+        }
         val trip = confirmedTripRepository.save(
             ConfirmedTrip(
-                userId = cmd.userId, quoteRequestId = cmd.quoteRequestId,
+                userId = user.id, quoteRequestId = cmd.quoteRequestId,
                 tourName = cmd.tourName, startDate = cmd.startDate, endDate = cmd.endDate,
                 groupSize = cmd.groupSize, spots = cmd.spots,
                 dailySchedule = cmd.dailySchedule, meetingInfo = cmd.meetingInfo, guideNote = cmd.guideNote
@@ -47,7 +51,7 @@ class TripApplication(
                 quoteRequestRepository.save(it)
             }
         }
-        eventPublisher.publishEvent(TripConfirmedEvent(trip.id, cmd.userId, cmd.tourName, cmd.quoteRequestId))
+        eventPublisher.publishEvent(TripConfirmedEvent(trip.id, user.id, cmd.tourName, cmd.quoteRequestId))
         return TripResult(trip.id, user.name, "${user.name}님 여행 등록 완료")
     }
 

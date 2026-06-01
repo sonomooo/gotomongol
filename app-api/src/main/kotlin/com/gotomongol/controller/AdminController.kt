@@ -87,7 +87,8 @@ class AdminController(
     @ResponseBody
     fun createTrip(@RequestBody body: Map<String, Any?>): ServiceResponse<Map<String, Any>> {
         val cmd = TripRegisterCommand(
-            userId = (body["userId"] as Number).toLong(),
+            phone = body["phone"] as? String,
+            customerName = body["customerName"] as? String,
             quoteRequestId = (body["quoteRequestId"] as? Number)?.toLong(),
             tourName = body["tourName"] as String,
             startDate = LocalDate.parse(body["startDate"] as String),

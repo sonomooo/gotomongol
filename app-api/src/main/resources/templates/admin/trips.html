@@ -53,8 +53,12 @@
             <h3 style="margin-bottom:1rem;">새 여행 등록</h3>
             <div class="msg" id="msg"></div>
             <div class="form-row">
-                <div><label>유저 ID</label><input type="number" id="userId"></div>
+                <div><label>핸드폰 번호</label><input type="tel" id="phone" placeholder="010-0000-0000"></div>
+                <div><label>고객 이름</label><input type="text" id="customerName"></div>
+            </div>
+            <div class="form-row">
                 <div><label>투어명</label><input type="text" id="tourName"></div>
+                <div><label>견적 ID (선택)</label><input type="number" id="quoteRequestId" placeholder="연결할 견적 번호"></div>
             </div>
             <div class="form-row">
                 <div><label>출발일</label><input type="date" id="startDate"></div>
@@ -88,10 +92,10 @@
     </div>
     <script>
         async function submitTrip() {
-            const body = { userId: parseInt(document.getElementById('userId').value), tourName: document.getElementById('tourName').value, startDate: document.getElementById('startDate').value, endDate: document.getElementById('endDate').value, groupSize: parseInt(document.getElementById('groupSize').value), spots: document.getElementById('spots').value, dailySchedule: document.getElementById('dailySchedule').value, meetingInfo: document.getElementById('meetingInfo').value || null, guideNote: document.getElementById('guideNote').value || null };
+            const body = { phone: document.getElementById('phone').value, customerName: document.getElementById('customerName').value, quoteRequestId: document.getElementById('quoteRequestId').value ? parseInt(document.getElementById('quoteRequestId').value) : null, tourName: document.getElementById('tourName').value, startDate: document.getElementById('startDate').value, endDate: document.getElementById('endDate').value, groupSize: parseInt(document.getElementById('groupSize').value), spots: document.getElementById('spots').value, dailySchedule: document.getElementById('dailySchedule').value, meetingInfo: document.getElementById('meetingInfo').value || null, guideNote: document.getElementById('guideNote').value || null };
             const res = await fetch('/admin/trips', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
             const data = await res.json();
-            document.getElementById('msg').textContent = data.message; document.getElementById('msg').style.display = 'block';
+            document.getElementById('msg').textContent = data.payload?.message || data.message; document.getElementById('msg').style.display = 'block';
             setTimeout(() => location.reload(), 1000);
         }
     </script>
