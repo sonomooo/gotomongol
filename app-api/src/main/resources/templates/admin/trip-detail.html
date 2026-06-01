@@ -18,7 +18,8 @@
         .field p { background: #1a1a2e; padding: 0.6rem; border-radius: 4px; white-space: pre-wrap; }
         .note { background: #78350f; padding: 0.6rem; border-radius: 4px; }
         a { color: #ff6b35; text-decoration: none; }
-            @media (max-width: 768px) {
+            .hamburger { display: none; }
+        @media (max-width: 768px) {
             .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
             .sidebar.open { display: block; }
             .main { margin-left: 0; padding: 1rem; }
@@ -28,7 +29,7 @@
             .tour-grid { grid-template-columns: 1fr !important; }
             .cards { grid-template-columns: 1fr !important; }
         }
-        .hamburger { display: none; }
+
     </style>
 </head>
 <body>

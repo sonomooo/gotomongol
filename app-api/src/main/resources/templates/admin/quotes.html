@@ -21,7 +21,8 @@
         .status-CANCELLED { color: #ef4444; }
         select, button { padding: 0.3rem 0.5rem; border-radius: 4px; border: none; }
         button { background: #ff6b35; color: white; cursor: pointer; }
-            @media (max-width: 768px) {
+            .hamburger { display: none; }
+        @media (max-width: 768px) {
             .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
             .sidebar.open { display: block; }
             .main { margin-left: 0; padding: 1rem; }
@@ -31,7 +32,7 @@
             .tour-grid { grid-template-columns: 1fr !important; }
             .cards { grid-template-columns: 1fr !important; }
         }
-        .hamburger { display: none; }
+
     </style>
 </head>
 <body>
@@ -53,7 +54,8 @@
             <a href="/admin/quotes?status=CONFIRMED" th:classappend="${currentStatus == 'CONFIRMED'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#10b981; border:1px solid #0f3460;">확정</a>
             <a href="/admin/quotes?status=CANCELLED" th:classappend="${currentStatus == 'CANCELLED'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#ef4444; border:1px solid #0f3460;">취소</a>
         </div>
-        <style>.active { background: #0f3460 !important; color: white !important; }        @media (max-width: 768px) {
+        <style>.active { background: #0f3460 !important; color: white !important; }        .hamburger { display: none; }
+        @media (max-width: 768px) {
             .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
             .sidebar.open { display: block; }
             .main { margin-left: 0; padding: 1rem; }
@@ -63,7 +65,7 @@
             .tour-grid { grid-template-columns: 1fr !important; }
             .cards { grid-template-columns: 1fr !important; }
         }
-        .hamburger { display: none; }
+
     </style>
         <table>
             <thead><tr><th>ID</th><th>이름</th><th>연락처</th><th>일수</th><th>인원</th><th>스팟</th><th>숙소</th><th>메모</th><th>상태</th><th>변경</th></tr></thead>

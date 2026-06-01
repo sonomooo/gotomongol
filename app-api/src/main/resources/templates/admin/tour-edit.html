@@ -24,7 +24,8 @@
         a { color: #ff6b35; text-decoration: none; }
         .upload-area { border: 2px dashed #0f3460; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; }
         .upload-area:hover { border-color: #ff6b35; }
-            @media (max-width: 768px) {
+            .hamburger { display: none; }
+        @media (max-width: 768px) {
             .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
             .sidebar.open { display: block; }
             .main { margin-left: 0; padding: 1rem; }
@@ -34,7 +35,7 @@
             .tour-grid { grid-template-columns: 1fr !important; }
             .cards { grid-template-columns: 1fr !important; }
         }
-        .hamburger { display: none; }
+
     </style>
 </head>
 <body>
