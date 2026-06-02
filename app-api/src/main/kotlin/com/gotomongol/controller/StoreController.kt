@@ -6,9 +6,11 @@ import com.gotomongol.application.ReviewApplication
 import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.BookingCommand
 import com.gotomongol.application.dto.QuoteSubmitCommand
+import com.gotomongol.domain.port.ActivityItemPort
+import com.gotomongol.domain.port.SiteConfigPort
+import com.gotomongol.domain.port.SpotItemPort
 import com.gotomongol.domain.response.ServiceErrorType
 import com.gotomongol.domain.response.ServiceResponse
-import com.gotomongol.domain.port.SiteConfigPort
 import com.gotomongol.domain.user.User
 import jakarta.servlet.http.HttpSession
 import org.springframework.http.ResponseEntity
@@ -23,7 +25,9 @@ class StoreController(
     private val tripApp: TripApplication,
     private val authApp: AuthApplication,
     private val reviewApp: ReviewApplication,
-    private val siteConfigPort: SiteConfigPort
+    private val siteConfigPort: SiteConfigPort,
+    private val spotItemPort: SpotItemPort,
+    private val activityItemPort: ActivityItemPort
 ) {
 
     // ─── 페이지 라우팅 ───
@@ -44,9 +48,8 @@ class StoreController(
 
     @GetMapping("/custom")
     fun customForm(model: Model): String {
-        val tours = tripApp.findActiveTours()
-        model.addAttribute("allSpots", tours.flatMap { it.spots }.distinct().sorted())
-        model.addAttribute("allActivities", tours.flatMap { it.activities }.distinct().sorted())
+        model.addAttribute("allSpots", spotItemPort.findActive().map { it.name })
+        model.addAttribute("allActivities", activityItemPort.findActive().map { it.name })
         return "custom"
     }
 

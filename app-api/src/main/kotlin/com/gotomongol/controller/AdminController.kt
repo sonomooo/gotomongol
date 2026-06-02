@@ -4,6 +4,8 @@ import com.gotomongol.application.QuoteApplication
 import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.TripRegisterCommand
 import com.gotomongol.domain.port.SiteConfigPort
+import com.gotomongol.domain.port.SpotItemPort
+import com.gotomongol.domain.port.ActivityItemPort
 import com.gotomongol.domain.port.TourPort
 import com.gotomongol.domain.port.UserPort
 import com.gotomongol.domain.response.ServiceResponse
@@ -29,6 +31,8 @@ class AdminController(
     private val tripApp: TripApplication,
     private val tourPort: TourPort,
     private val siteConfigPort: SiteConfigPort,
+    private val spotItemPort: SpotItemPort,
+    private val activityItemPort: ActivityItemPort,
     private val userPort: UserPort,
     @Value("\${upload.path:./uploads}") private val uploadPath: String
 ) {
@@ -190,6 +194,39 @@ class AdminController(
         aboutText?.let { saveConfig("aboutText", it) }
         kakaoLink?.let { saveConfig("kakaoLink", it) }
         return "redirect:/admin/site"
+    }
+
+    // ─── 카탈로그 관리 (스팟/액티비티) ───
+
+    @GetMapping("/catalog")
+    fun catalogPage(model: Model): String {
+        model.addAttribute("spots", spotItemPort.findAll())
+        model.addAttribute("activities", activityItemPort.findAll())
+        return "admin/catalog"
+    }
+
+    @PostMapping("/catalog/spot")
+    fun addSpot(@RequestParam name: String): String {
+        spotItemPort.save(com.gotomongol.domain.tour.SpotItem(name = name))
+        return "redirect:/admin/catalog"
+    }
+
+    @PostMapping("/catalog/activity")
+    fun addActivity(@RequestParam name: String): String {
+        activityItemPort.save(com.gotomongol.domain.tour.ActivityItem(name = name))
+        return "redirect:/admin/catalog"
+    }
+
+    @PostMapping("/catalog/spot/{id}/delete")
+    fun deleteSpot(@PathVariable id: Long): String {
+        spotItemPort.deleteById(id)
+        return "redirect:/admin/catalog"
+    }
+
+    @PostMapping("/catalog/activity/{id}/delete")
+    fun deleteActivity(@PathVariable id: Long): String {
+        activityItemPort.deleteById(id)
+        return "redirect:/admin/catalog"
     }
 
     // ─── 가격 설정 ───

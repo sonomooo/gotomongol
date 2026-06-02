@@ -69,3 +69,17 @@ interface PriceConfigPort {
     fun save(config: PriceConfig): PriceConfig
     fun deleteById(id: Long)
 }
+
+interface SpotItemPort {
+    fun findAll(): List<SpotItem>
+    fun findActive(): List<SpotItem>
+    fun save(item: SpotItem): SpotItem
+    fun deleteById(id: Long)
+}
+
+interface ActivityItemPort {
+    fun findAll(): List<ActivityItem>
+    fun findActive(): List<ActivityItem>
+    fun save(item: ActivityItem): ActivityItem
+    fun deleteById(id: Long)
+}

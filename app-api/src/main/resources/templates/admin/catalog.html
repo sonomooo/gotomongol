@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카탈로그 관리 - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100vh; background: #16213e; padding: 2rem 1rem; }
+        .sidebar h2 { color: #ff6b35; margin-bottom: 2rem; font-size: 1.1rem; }
+        .sidebar a { display: block; color: #aaa; text-decoration: none; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 0.3rem; }
+        .sidebar a:hover, .sidebar a.active { background: #0f3460; color: white; }
+        .main { margin-left: 220px; padding: 2rem; }
+        .section { background: #16213e; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
+        .section h3 { margin-bottom: 1rem; color: #ff6b35; }
+        .items { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .item { background: #0f3460; padding: 0.4rem 0.8rem; border-radius: 20px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+        .item form { display: inline; }
+        .item button { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; }
+        .add-form { display: flex; gap: 0.5rem; }
+        .add-form input { padding: 0.5rem; border: 1px solid #0f3460; border-radius: 4px; background: #1a1a2e; color: #eee; flex: 1; }
+        .add-form button { padding: 0.5rem 1rem; background: #ff6b35; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .hamburger { display: none; }
+        @media (max-width: 768px) {
+            .sidebar { display: none; position: fixed; z-index: 100; width: 100%; height: auto; padding: 1rem; }
+            .sidebar.open { display: block; }
+            .main { margin-left: 0; padding: 1rem; }
+            .hamburger { display: block; position: fixed; top: 1rem; right: 1rem; z-index: 101; background: #ff6b35; color: white; border: none; border-radius: 6px; padding: 0.5rem 0.8rem; font-size: 1.2rem; cursor: pointer; }
+        }
+    </style>
+</head>
+<body>
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+    <div class="sidebar">
+        <h2>🇲🇳 GoToMongol</h2>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;"><a href="?lang=ko" style="color:#aaa;font-size:0.8rem;">🇰🇷 한국어</a><a href="?lang=mn" style="color:#aaa;font-size:0.8rem;">🇲🇳 Монгол</a></div>
+        <a href="/admin" th:text="#{admin.dashboard}">대시보드</a>
+        <a href="/admin/quotes" th:text="#{admin.quotes}">견적 관리</a>
+        <a href="/admin/trips" th:text="#{admin.trips}">여행 관리</a>
+        <a href="/admin/tours" th:text="#{admin.tours}">투어 상품 관리</a>
+        <a href="/admin/catalog" class="active">카탈로그 관리</a>
+        <a href="/admin/pricing" th:text="#{admin.pricing}">가격 설정</a>
+        <a href="/admin/site" th:text="#{admin.site}">사이트 설정</a>
+    </div>
+    <div class="main">
+        <h1 style="margin-bottom:1.5rem;">📋 카탈로그 관리</h1>
+        <p style="color:#aaa; margin-bottom:2rem;">여기서 추가한 항목이 고객 견적 요청 폼에 체크박스로 표시됩니다.</p>
+
+        <div class="section">
+            <h3>📍 방문지 (가고 싶은 곳)</h3>
+            <div class="items">
+                <div th:each="spot : ${spots}" class="item">
+                    <span th:text="${spot.name}">홉스골</span>
+                    <form th:action="@{/admin/catalog/spot/{id}/delete(id=${spot.id})}" method="post">
+                        <button type="submit">×</button>
+                    </form>
+                </div>
+            </div>
+            <form action="/admin/catalog/spot" method="post" class="add-form">
+                <input type="text" name="name" placeholder="새 방문지 이름" required>
+                <button type="submit">추가</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h3>🎯 액티비티 (하고 싶은 활동)</h3>
+            <div class="items">
+                <div th:each="act : ${activities}" class="item">
+                    <span th:text="${act.name}">승마</span>
+                    <form th:action="@{/admin/catalog/activity/{id}/delete(id=${act.id})}" method="post">
+                        <button type="submit">×</button>
+                    </form>
+                </div>
+            </div>
+            <form action="/admin/catalog/activity" method="post" class="add-form">
+                <input type="text" name="name" placeholder="새 액티비티 이름" required>
+                <button type="submit">추가</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
