@@ -87,14 +87,26 @@
                         <label>최대 가격 (원)</label>
                         <input type="number" name="maxPrice" th:value="${tour.maxPrice}" required>
                     </div>
-                    <div class="form-group">
-                        <label>방문지 (쉼표 구분)</label>
-                        <input type="text" name="spots" th:value="${#strings.listJoin(tour.spots, ', ')}">
-                    </div>
                 </div>
                 <div class="form-group">
-                    <label>액티비티 (쉼표 구분)</label>
-                    <input type="text" name="activities" th:value="${#strings.listJoin(tour.activities, ', ')}">
+                    <label>방문지</label>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.5rem;">
+                        <label th:each="spot : ${allSpots}" style="display:flex; align-items:center; gap:0.3rem; color:#ccc; font-size:0.9rem;">
+                            <input type="checkbox" name="spots" th:value="${spot}" th:checked="${tour.spots.contains(spot)}">
+                            <span th:text="${spot}">스팟</span>
+                        </label>
+                    </div>
+                    <input type="text" name="spots" placeholder="기타 방문지 (쉼표 구분)" style="margin-top:0.3rem;">
+                </div>
+                <div class="form-group">
+                    <label>액티비티</label>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.5rem;">
+                        <label th:each="act : ${allActivities}" style="display:flex; align-items:center; gap:0.3rem; color:#ccc; font-size:0.9rem;">
+                            <input type="checkbox" name="activities" th:value="${act}" th:checked="${tour.activities.contains(act)}">
+                            <span th:text="${act}">액티비티</span>
+                        </label>
+                    </div>
+                    <input type="text" name="activities" placeholder="기타 액티비티 (쉼표 구분)" style="margin-top:0.3rem;">
                 </div>
                 <div class="form-group">
                     <label>간단 설명</label>

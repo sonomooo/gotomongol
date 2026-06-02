@@ -123,7 +123,13 @@ class AdminController(
 
     @GetMapping("/tours/{id}")
     fun editTour(@PathVariable id: Long, model: Model): String {
-        model.addAttribute("tour", tourPort.findById(id) ?: throw IllegalArgumentException("투어를 찾을 수 없습니다."))
+        val tour = tourPort.findById(id) ?: throw IllegalArgumentException("투어를 찾을 수 없습니다.")
+        val allTours = tourPort.findAll()
+        val allSpots = allTours.flatMap { it.spots }.distinct().sorted()
+        val allActivities = allTours.flatMap { it.activities }.distinct().sorted()
+        model.addAttribute("tour", tour)
+        model.addAttribute("allSpots", allSpots)
+        model.addAttribute("allActivities", allActivities)
         return "admin/tour-edit"
     }
 
@@ -131,8 +137,9 @@ class AdminController(
     fun updateTour(
         @PathVariable id: Long, @RequestParam name: String, @RequestParam days: Int,
         @RequestParam description: String, @RequestParam minPrice: Int,
-        @RequestParam maxPrice: Int, @RequestParam spots: String,
-        @RequestParam activities: String, @RequestParam(required = false) detailContent: String?,
+        @RequestParam maxPrice: Int, @RequestParam(required = false) spots: List<String>?,
+        @RequestParam(required = false) activities: List<String>?,
+        @RequestParam(required = false) detailContent: String?,
         @RequestParam(required = false) image: MultipartFile?,
         @RequestParam(required = false) images: List<MultipartFile>?
     ): String {
@@ -141,11 +148,13 @@ class AdminController(
         val newImageUrls = existing.imageUrls.toMutableList()
         images?.filter { !it.isEmpty }?.forEach { newImageUrls.add(saveFile(it)) }
 
+        val allSpots = spots?.flatMap { it.split(",") }?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+        val allActivities = activities?.flatMap { it.split(",") }?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+
         tourPort.save(existing.copy(
             name = name, days = days, description = description,
             minPrice = minPrice, maxPrice = maxPrice,
-            spots = spots.split(",").map { it.trim() }.filter { it.isNotEmpty() },
-            activities = activities.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+            spots = allSpots, activities = allActivities,
             detailContent = detailContent, imageUrl = newImageUrl, imageUrls = newImageUrls
         ))
         return "redirect:/admin/tours"
