@@ -43,7 +43,10 @@ class StoreController(
     }
 
     @GetMapping("/custom")
-    fun customForm(): String {
+    fun customForm(model: Model): String {
+        val tours = tripApp.findActiveTours()
+        model.addAttribute("allSpots", tours.flatMap { it.spots }.distinct().sorted())
+        model.addAttribute("allActivities", tours.flatMap { it.activities }.distinct().sorted())
         return "custom"
     }
 

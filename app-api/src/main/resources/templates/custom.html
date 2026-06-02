@@ -107,26 +107,14 @@
             <div class="form-group">
                 <label>가고 싶은 곳 (복수 선택)</label>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" name="spots" value="홉스골 호수"> 홉스골 호수</label>
-                    <label><input type="checkbox" name="spots" value="고비사막"> 고비사막</label>
-                    <label><input type="checkbox" name="spots" value="테를지 국립공원"> 테를지 국립공원</label>
-                    <label><input type="checkbox" name="spots" value="오르혼 폭포"> 오르혼 폭포</label>
-                    <label><input type="checkbox" name="spots" value="쳉헤르 온천"> 쳉헤르 온천</label>
-                    <label><input type="checkbox" name="spots" value="미니사막"> 미니사막</label>
-                    <label><input type="checkbox" name="spots" value="울란바토르 시내"> 울란바토르 시내</label>
+                    <label th:each="spot : ${allSpots}"><input type="checkbox" name="spots" th:value="${spot}"> <span th:text="${spot}">스팟</span></label>
                 </div>
                 <input type="text" name="spots" placeholder="기타 - 직접 입력" style="margin-top:0.5rem;">
             </div>
             <div class="form-group">
                 <label>하고 싶은 활동 (복수 선택)</label>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" name="activities" value="승마"> 승마</label>
-                    <label><input type="checkbox" name="activities" value="낙타"> 낙타</label>
-                    <label><input type="checkbox" name="activities" value="독수리 체험"> 독수리 체험</label>
-                    <label><input type="checkbox" name="activities" value="게르 숙박"> 게르 숙박</label>
-                    <label><input type="checkbox" name="activities" value="유목민 홈스테이"> 유목민 홈스테이</label>
-                    <label><input type="checkbox" name="activities" value="별보기/은하수"> 별보기/은하수</label>
-                    <label><input type="checkbox" name="activities" value="온천"> 온천</label>
+                    <label th:each="act : ${allActivities}"><input type="checkbox" name="activities" th:value="${act}"> <span th:text="${act}">액티비티</span></label>
                 </div>
                 <input type="text" name="activities" placeholder="기타 - 직접 입력" style="margin-top:0.5rem;">
             </div>
