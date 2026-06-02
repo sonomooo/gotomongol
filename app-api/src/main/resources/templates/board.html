@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 - 고투몽골</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f9f9f9; padding: 2rem 1rem; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .nav { margin-bottom: 2rem; }
+        .nav a { color: #666; text-decoration: none; margin-right: 1rem; }
+        h1 { margin-bottom: 1.5rem; }
+        .tabs { display: flex; gap: 0; margin-bottom: 2rem; border-bottom: 2px solid #eee; }
+        .tabs a { padding: 0.8rem 1.5rem; text-decoration: none; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; font-weight: 500; }
+        .tabs a.active { color: #ff6b35; border-bottom-color: #ff6b35; }
+        .post-list { list-style: none; }
+        .post-item { background: white; border-radius: 8px; padding: 1.2rem; margin-bottom: 0.8rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .post-item a { text-decoration: none; color: #333; font-weight: 500; font-size: 1.05rem; }
+        .post-item a:hover { color: #ff6b35; }
+        .empty { text-align: center; padding: 4rem; color: #999; }
+        @media (max-width: 768px) {
+            .tabs { overflow-x: auto; }
+            .tabs a { white-space: nowrap; padding: 0.6rem 1rem; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav"><a href="/">← 홈</a></div>
+        <h1>📌 게시판</h1>
+
+        <div class="tabs">
+            <a href="/board?category=NOTICE" th:classappend="${currentCategory == 'NOTICE'} ? ' active' : ''">공지사항</a>
+            <a href="/board?category=WELCOME" th:classappend="${currentCategory == 'WELCOME'} ? ' active' : ''">몽골로 오세요</a>
+            <a href="/board?category=SPOT_INFO" th:classappend="${currentCategory == 'SPOT_INFO'} ? ' active' : ''">관광지</a>
+            <a href="/board?category=ACTIVITY_INFO" th:classappend="${currentCategory == 'ACTIVITY_INFO'} ? ' active' : ''">활동</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(posts)}" class="empty">
+            <p>아직 게시글이 없습니다.</p>
+        </div>
+
+        <ul class="post-list">
+            <li th:each="post : ${posts}" class="post-item">
+                <a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}">게시글 제목</a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

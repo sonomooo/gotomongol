@@ -6,6 +6,7 @@ import com.gotomongol.application.dto.TripRegisterCommand
 import com.gotomongol.domain.port.SiteConfigPort
 import com.gotomongol.domain.port.SpotItemPort
 import com.gotomongol.domain.port.ActivityItemPort
+import com.gotomongol.domain.port.BoardPostPort
 import com.gotomongol.domain.port.TourPort
 import com.gotomongol.domain.port.UserPort
 import com.gotomongol.domain.response.ServiceResponse
@@ -33,6 +34,7 @@ class AdminController(
     private val siteConfigPort: SiteConfigPort,
     private val spotItemPort: SpotItemPort,
     private val activityItemPort: ActivityItemPort,
+    private val boardPostPort: BoardPostPort,
     private val userPort: UserPort,
     @Value("\${upload.path:./uploads}") private val uploadPath: String
 ) {
@@ -194,6 +196,35 @@ class AdminController(
         aboutText?.let { saveConfig("aboutText", it) }
         kakaoLink?.let { saveConfig("kakaoLink", it) }
         return "redirect:/admin/site"
+    }
+
+    // ─── 게시판 관리 ───
+
+    @GetMapping("/board")
+    fun boardAdmin(model: Model): String {
+        model.addAttribute("posts", boardPostPort.findAll())
+        return "admin/board"
+    }
+
+    @PostMapping("/board")
+    fun createPost(
+        @RequestParam category: String,
+        @RequestParam title: String,
+        @RequestParam content: String,
+        @RequestParam(required = false) image: MultipartFile?
+    ): String {
+        val imageUrl = if (image != null && !image.isEmpty) saveFile(image) else null
+        boardPostPort.save(com.gotomongol.domain.board.BoardPost(
+            category = com.gotomongol.domain.board.BoardCategory.valueOf(category),
+            title = title, content = content, imageUrl = imageUrl
+        ))
+        return "redirect:/admin/board"
+    }
+
+    @PostMapping("/board/{id}/delete")
+    fun deletePost(@PathVariable id: Long): String {
+        boardPostPort.deleteById(id)
+        return "redirect:/admin/board"
     }
 
     // ─── 카탈로그 관리 (스팟/액티비티) ───

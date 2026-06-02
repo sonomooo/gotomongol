@@ -7,6 +7,7 @@ import com.gotomongol.application.TripApplication
 import com.gotomongol.application.dto.BookingCommand
 import com.gotomongol.application.dto.QuoteSubmitCommand
 import com.gotomongol.domain.port.ActivityItemPort
+import com.gotomongol.domain.port.BoardPostPort
 import com.gotomongol.domain.port.SiteConfigPort
 import com.gotomongol.domain.port.SpotItemPort
 import com.gotomongol.domain.response.ServiceErrorType
@@ -27,7 +28,8 @@ class StoreController(
     private val reviewApp: ReviewApplication,
     private val siteConfigPort: SiteConfigPort,
     private val spotItemPort: SpotItemPort,
-    private val activityItemPort: ActivityItemPort
+    private val activityItemPort: ActivityItemPort,
+    private val boardPostPort: BoardPostPort
 ) {
 
     // ─── 페이지 라우팅 ───
@@ -168,6 +170,21 @@ class StoreController(
         } catch (e: IllegalArgumentException) {
             ServiceResponse.error(ServiceErrorType.BOOKING_CONFLICT, e.message)
         }
+    }
+
+    // ─── 게시판 ───
+
+    @GetMapping("/board")
+    fun board(@RequestParam(required = false, defaultValue = "NOTICE") category: String, model: Model): String {
+        model.addAttribute("posts", boardPostPort.findByCategory(category))
+        model.addAttribute("currentCategory", category)
+        return "board"
+    }
+
+    @GetMapping("/board/{id}")
+    fun boardDetail(@PathVariable id: Long, model: Model): String {
+        model.addAttribute("post", boardPostPort.findById(id))
+        return "board-detail"
     }
 
     // ─── 후기 ───

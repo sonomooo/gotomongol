@@ -83,3 +83,11 @@ interface ActivityItemPort {
     fun save(item: ActivityItem): ActivityItem
     fun deleteById(id: Long)
 }
+
+interface BoardPostPort {
+    fun findByCategory(category: String): List<com.gotomongol.domain.board.BoardPost>
+    fun findById(id: Long): com.gotomongol.domain.board.BoardPost?
+    fun findAll(): List<com.gotomongol.domain.board.BoardPost>
+    fun save(post: com.gotomongol.domain.board.BoardPost): com.gotomongol.domain.board.BoardPost
+    fun deleteById(id: Long)
+}
