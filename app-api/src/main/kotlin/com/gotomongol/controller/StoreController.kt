@@ -81,6 +81,7 @@ class StoreController(
         val trip = tripApp.findTripById(id)
         if (trip.userId != userId) return "redirect:/my/trips"
         model.addAttribute("trip", trip)
+        model.addAttribute("quote", tripApp.findQuoteByTripId(id))
         return "trip-detail"
     }
 

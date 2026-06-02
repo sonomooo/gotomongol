@@ -94,6 +94,11 @@ END:VCALENDAR""".trimIndent()
         return confirmedTripPort.findById(id) ?: throw IllegalArgumentException("여행을 찾을 수 없습니다.")
     }
 
+    fun findQuoteByTripId(tripId: Long): QuoteRequest? {
+        val trip = findTripById(tripId)
+        return trip.quoteRequestId?.let { quoteRequestPort.findById(it) }
+    }
+
     fun findAllTrips(): List<ConfirmedTrip> {
         return confirmedTripPort.findAll()
     }

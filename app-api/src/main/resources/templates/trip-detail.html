@@ -58,6 +58,18 @@
             <a th:href="@{/my/trips/{id}/calendar(id=${trip.id})}" class="btn-primary">📱 캘린더에 저장</a>
             <button class="btn-secondary" onclick="window.print()">🖨️ 프린트</button>
         </div>
+
+        <div th:if="${quote != null}" style="margin-top:2rem; background:#f0f0f0; padding:1.5rem; border-radius:8px;">
+            <h2 style="margin-bottom:1rem;">📄 견적서</h2>
+            <table style="width:100%; font-size:0.9rem; line-height:2;">
+                <tr><td style="color:#666;">여행 일수</td><td th:text="${quote.days} + '일'">5일</td></tr>
+                <tr><td style="color:#666;">인원</td><td th:text="${quote.groupSize} + '명'">2명</td></tr>
+                <tr><td style="color:#666;">숙소 등급</td><td th:text="${quote.accommodationType}">CAMP</td></tr>
+                <tr><td style="color:#666;">방문지</td><td th:text="${#strings.listJoin(quote.spots, ', ')}">홉스골</td></tr>
+                <tr><td style="color:#666;">액티비티</td><td th:text="${#strings.listJoin(quote.activities, ', ')}">승마</td></tr>
+                <tr th:if="${quote.memo != null}"><td style="color:#666;">요청사항</td><td th:text="${quote.memo}">메모</td></tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>
