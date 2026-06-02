@@ -48,7 +48,7 @@
         <a href="/admin/site" th:text="#{admin.site}">사이트 설정</a>
     </div>
     <div class="main">
-        <h1 style="margin-bottom:1rem;">📋 견적 관리</h1>
+        <h1 style="margin-bottom:1rem;" th:text="#{admin.quotes}">📋 견적 관리</h1>
         <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
             <a href="/admin/quotes" th:classappend="${currentStatus == 'ALL'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#aaa; border:1px solid #0f3460;">전체</a>
             <a href="/admin/quotes?status=PENDING" th:classappend="${currentStatus == 'PENDING'} ? ' active' : ''" style="padding:0.4rem 1rem; border-radius:20px; text-decoration:none; color:#f59e0b; border:1px solid #0f3460;">대기</a>

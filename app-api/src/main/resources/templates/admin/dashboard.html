@@ -43,22 +43,22 @@
         <a href="/admin/site" th:text="#{admin.site}">사이트 설정</a>
     </div>
     <div class="main">
-        <h1 style="margin-bottom:2rem;">대시보드</h1>
+        <h1 style="margin-bottom:2rem;" th:text="#{admin.dashboard}">대시보드</h1>
         <div class="cards">
             <div class="card">
-                <h3>견적 요청</h3>
+                <h3 th:text="#{admin.quoteCount}">견적 요청</h3>
                 <div class="num" th:text="${quoteCount}">0</div>
             </div>
             <div class="card">
-                <h3>확정 여행</h3>
+                <h3 th:text="#{admin.tripCount}">확정 여행</h3>
                 <div class="num" th:text="${tripCount}">0</div>
             </div>
             <div class="card">
-                <h3>등록 회원</h3>
+                <h3 th:text="#{admin.userCount}">등록 회원</h3>
                 <div class="num" th:text="${userCount}">0</div>
             </div>
             <div class="card">
-                <h3>투어 상품</h3>
+                <h3 th:text="#{admin.tourCount}">투어 상품</h3>
                 <div class="num" th:text="${tourCount}">0</div>
             </div>
         </div>

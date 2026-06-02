@@ -44,22 +44,22 @@
         <a href="/admin/site" th:text="#{admin.site}">사이트 설정</a>
     </div>
     <div class="main">
-        <h1 style="margin-bottom:1.5rem;">💰 가격 설정</h1>
+        <h1 style="margin-bottom:1.5rem;" th:text="#{admin.pricing}">💰 가격 설정</h1>
         <p style="color:#aaa; margin-bottom:1.5rem;">항목별 가격을 설정하면 고객이 견적 요청 시 예상 금액이 자동 계산됩니다.</p>
 
         <div class="form-box">
             <h3 style="margin-bottom:1rem;">항목 추가</h3>
             <div class="form-row">
-                <div><label>카테고리</label><select id="category"><option value="BASE">기본</option><option value="SPOT">방문지</option><option value="ACTIVITY">액티비티</option><option value="ACCOMMODATION">숙소</option></select></div>
-                <div><label>항목명</label><input type="text" id="itemName" placeholder="예: 차량+기사, 홉스골 호수, 승마"></div>
+                <div><label th:text="#{admin.category}">카테고리</label><select id="category"><option value="BASE">기본</option><option value="SPOT">방문지</option><option value="ACTIVITY">액티비티</option><option value="ACCOMMODATION">숙소</option></select></div>
+                <div><label th:text="#{admin.itemName}">항목명</label><input type="text" id="itemName" placeholder="예: 차량+기사, 홉스골 호수, 승마"></div>
                 <div><label>가격 (원)</label><input type="number" id="pricePerUnit" placeholder="180000"></div>
-                <div><label>단위</label><input type="text" id="unit" value="1일" placeholder="1일, 1회"></div>
+                <div><label th:text="#{admin.unit}">단위</label><input type="text" id="unit" value="1일" placeholder="1일, 1회"></div>
                 <div><label>&nbsp;</label><button onclick="addConfig()">추가</button></div>
             </div>
         </div>
 
         <table>
-            <thead><tr><th>카테고리</th><th>항목명</th><th>가격</th><th>단위</th><th></th></tr></thead>
+            <thead><tr><th th:text="#{admin.category}">카테고리</th><th th:text="#{admin.itemName}">항목명</th><th th:text="#{admin.price}">가격</th><th th:text="#{admin.unit}">단위</th><th></th></tr></thead>
             <tbody>
                 <tr th:each="c : ${configs}">
                     <td th:text="${c.category}">BASE</td>
