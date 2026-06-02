@@ -8,7 +8,6 @@ class PriceConfigEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @Enumerated(EnumType.STRING)
     val category: String,
 
     val itemName: String,
