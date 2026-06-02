@@ -41,13 +41,14 @@
 <body>
     <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
     <div class="sidebar">
-        <h2>🇲🇳 고투몽골 Admin</h2>
-        <a href="/admin">대시보드</a>
-        <a href="/admin/quotes">견적 관리</a>
-        <a href="/admin/trips">여행 관리</a>
-        <a href="/admin/tours">투어 상품 관리</a>
-        <a href="/admin/pricing">가격 설정</a>
-        <a href="/admin/site">사이트 설정</a>
+        <h2>🇲🇳 GoToMongol</h2>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;"><a href="?lang=ko" style="color:#aaa;font-size:0.8rem;">🇰🇷 한국어</a><a href="?lang=mn" style="color:#aaa;font-size:0.8rem;">🇲🇳 Монгол</a></div>
+        <a href="/admin" th:text="#{admin.dashboard}">대시보드</a>
+        <a href="/admin/quotes" th:text="#{admin.quotes}">견적 관리</a>
+        <a href="/admin/trips" th:text="#{admin.trips}">여행 관리</a>
+        <a href="/admin/tours" th:text="#{admin.tours}">투어 상품 관리</a>
+        <a href="/admin/pricing" th:text="#{admin.pricing}">가격 설정</a>
+        <a href="/admin/site" th:text="#{admin.site}">사이트 설정</a>
     </div>
     <div class="main">
         <a href="/admin/tours">← 목록</a>
