@@ -8,6 +8,7 @@ class SpotItemEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val name: String = "",
+    val price: Int = 0,
     val active: Boolean = true
 )
 
@@ -17,5 +18,6 @@ class ActivityItemEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val name: String = "",
+    val price: Int = 0,
     val active: Boolean = true
 )

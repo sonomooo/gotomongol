@@ -52,14 +52,15 @@
             <h3>📍 방문지 (가고 싶은 곳)</h3>
             <div class="items">
                 <div th:each="spot : ${spots}" class="item">
-                    <span th:text="${spot.name}">홉스골</span>
+                    <span th:text="${spot.name} + ' (' + ${#numbers.formatInteger(spot.price, 0, 'COMMA')} + '원)'">홉스골 (50,000원)</span>
                     <form th:action="@{/admin/catalog/spot/{id}/delete(id=${spot.id})}" method="post">
                         <button type="submit">×</button>
                     </form>
                 </div>
             </div>
             <form action="/admin/catalog/spot" method="post" class="add-form">
-                <input type="text" name="name" placeholder="새 방문지 이름" required>
+                <input type="text" name="name" placeholder="방문지 이름" required>
+                <input type="number" name="price" placeholder="금액 (원)" value="0" style="max-width:120px;">
                 <button type="submit">추가</button>
             </form>
         </div>
@@ -68,14 +69,15 @@
             <h3>🎯 액티비티 (하고 싶은 활동)</h3>
             <div class="items">
                 <div th:each="act : ${activities}" class="item">
-                    <span th:text="${act.name}">승마</span>
+                    <span th:text="${act.name} + ' (' + ${#numbers.formatInteger(act.price, 0, 'COMMA')} + '원)'">승마 (30,000원)</span>
                     <form th:action="@{/admin/catalog/activity/{id}/delete(id=${act.id})}" method="post">
                         <button type="submit">×</button>
                     </form>
                 </div>
             </div>
             <form action="/admin/catalog/activity" method="post" class="add-form">
-                <input type="text" name="name" placeholder="새 액티비티 이름" required>
+                <input type="text" name="name" placeholder="액티비티 이름" required>
+                <input type="number" name="price" placeholder="금액 (원)" value="0" style="max-width:120px;">
                 <button type="submit">추가</button>
             </form>
         </div>

@@ -237,14 +237,14 @@ class AdminController(
     }
 
     @PostMapping("/catalog/spot")
-    fun addSpot(@RequestParam name: String): String {
-        spotItemPort.save(com.gotomongol.domain.tour.SpotItem(name = name))
+    fun addSpot(@RequestParam name: String, @RequestParam(defaultValue = "0") price: Int): String {
+        spotItemPort.save(com.gotomongol.domain.tour.SpotItem(name = name, price = price))
         return "redirect:/admin/catalog"
     }
 
     @PostMapping("/catalog/activity")
-    fun addActivity(@RequestParam name: String): String {
-        activityItemPort.save(com.gotomongol.domain.tour.ActivityItem(name = name))
+    fun addActivity(@RequestParam name: String, @RequestParam(defaultValue = "0") price: Int): String {
+        activityItemPort.save(com.gotomongol.domain.tour.ActivityItem(name = name, price = price))
         return "redirect:/admin/catalog"
     }
 

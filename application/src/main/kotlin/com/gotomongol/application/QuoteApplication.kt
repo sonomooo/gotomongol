@@ -2,8 +2,10 @@ package com.gotomongol.application
 
 import com.gotomongol.application.dto.QuoteSubmitCommand
 import com.gotomongol.domain.event.QuoteSubmittedEvent
+import com.gotomongol.domain.port.ActivityItemPort
 import com.gotomongol.domain.port.PriceConfigPort
 import com.gotomongol.domain.port.QuoteRequestPort
+import com.gotomongol.domain.port.SpotItemPort
 import com.gotomongol.domain.tour.AccommodationType
 import com.gotomongol.domain.tour.PriceCategory
 import com.gotomongol.domain.tour.PriceConfig
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional
 class QuoteApplication(
     private val quoteRequestPort: QuoteRequestPort,
     private val priceConfigPort: PriceConfigPort,
+    private val spotItemPort: SpotItemPort,
+    private val activityItemPort: ActivityItemPort,
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
@@ -62,8 +66,9 @@ class QuoteApplication(
         breakdown.add(mapOf("item" to "식비 (${days}일)", "amount" to mealCost))
 
         // 스팟별 추가
+        val spotPriceMap = spotItemPort.findActive().associateBy { it.name }
         spots.forEach { spot ->
-            val price = configMap["SPOT_$spot"]?.pricePerUnit ?: 0
+            val price = spotPriceMap[spot]?.price ?: configMap["SPOT_$spot"]?.pricePerUnit ?: 0
             if (price > 0) {
                 total += price
                 breakdown.add(mapOf("item" to spot, "amount" to price))
@@ -71,8 +76,9 @@ class QuoteApplication(
         }
 
         // 액티비티별 추가
+        val actPriceMap = activityItemPort.findActive().associateBy { it.name }
         activities.forEach { activity ->
-            val price = configMap["ACTIVITY_$activity"]?.pricePerUnit ?: 30000
+            val price = actPriceMap[activity]?.price ?: configMap["ACTIVITY_$activity"]?.pricePerUnit ?: 30000
             total += price
             breakdown.add(mapOf("item" to activity, "amount" to price))
         }
