@@ -116,19 +116,22 @@ class StoreController(
 
     @PostMapping("/api/auth/send-code")
     @ResponseBody
-    fun sendCode(@RequestBody body: Map<String, String>): ServiceResponse<Nothing> {
-        authApp.sendCode(body["phone"]!!)
+    fun sendCode(@RequestBody body: Map<String, Any>): ServiceResponse<Nothing> {
+        authApp.sendCode(body["phone"] as String)
         return ServiceResponse.success()
     }
 
     @PostMapping("/api/auth/verify")
     @ResponseBody
-    fun verify(@RequestBody body: Map<String, String>, session: HttpSession): ServiceResponse<User> {
-        val phone = body["phone"]!!
-        val code = body["code"]!!
-        val name = body["name"] ?: ""
+    fun verify(@RequestBody body: Map<String, Any>, session: HttpSession): ServiceResponse<User> {
+        val phone = body["phone"] as String
+        val code = body["code"] as String
+        val name = body["name"] as? String ?: ""
+        val termsAgreed = body["termsAgreed"] as? Boolean ?: false
+        val privacyAgreed = body["privacyAgreed"] as? Boolean ?: false
+        val marketingAgreed = body["marketingAgreed"] as? Boolean ?: false
         if (!authApp.verify(phone, code)) return ServiceResponse.error(ServiceErrorType.VERIFICATION_FAILED)
-        val user = authApp.loginOrRegister(phone, name)
+        val user = authApp.loginOrRegister(phone, name, termsAgreed, privacyAgreed, marketingAgreed)
         session.setAttribute("userId", user.id)
         return ServiceResponse.success(user)
     }

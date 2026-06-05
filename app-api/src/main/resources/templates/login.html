@@ -46,6 +46,21 @@
                 <label>이름</label>
                 <input type="text" id="name" placeholder="홍길동">
             </div>
+            <div class="form-group" style="font-size:0.85rem; line-height:2;">
+                <label style="display:flex; align-items:center; gap:0.4rem; font-weight:normal; cursor:pointer;">
+                    <input type="checkbox" id="allAgree" onchange="toggleAll(this.checked)"> <strong>전체 동의</strong>
+                </label>
+                <hr style="margin:0.3rem 0; border:none; border-top:1px solid #eee;">
+                <label style="display:flex; align-items:center; gap:0.4rem; font-weight:normal; cursor:pointer;">
+                    <input type="checkbox" id="termsAgreed" required> [필수] 이용약관 동의 <a href="#" onclick="showModal('terms'); return false;" style="color:#ff6b35; margin-left:0.3rem;">보기</a>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.4rem; font-weight:normal; cursor:pointer;">
+                    <input type="checkbox" id="privacyAgreed" required> [필수] 개인정보 수집·이용 동의 <a href="#" onclick="showModal('privacy'); return false;" style="color:#ff6b35; margin-left:0.3rem;">보기</a>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.4rem; font-weight:normal; cursor:pointer;">
+                    <input type="checkbox" id="marketingAgreed"> [선택] 마케팅 정보 수신 동의
+                </label>
+            </div>
             <button class="btn" onclick="sendCode()">인증코드 받기</button>
             <div class="error" id="error1"></div>
         </div>
@@ -70,59 +85,58 @@
     <script>
         let countdown;
 
+        function toggleAll(checked) {
+            document.getElementById('termsAgreed').checked = checked;
+            document.getElementById('privacyAgreed').checked = checked;
+            document.getElementById('marketingAgreed').checked = checked;
+        }
+
         function sendCode() {
             const phone = document.getElementById('phone').value.trim();
             const name = document.getElementById('name').value.trim();
             if (!phone || !name) { document.getElementById('error1').textContent = '이름과 핸드폰 번호를 입력해주세요.'; return; }
+            if (!document.getElementById('termsAgreed').checked || !document.getElementById('privacyAgreed').checked) {
+                document.getElementById('error1').textContent = '필수 약관에 동의해주세요.'; return;
+            }
+            document.getElementById('error1').textContent = '';
 
-            // 마스터 계정 바로 로그인
             if (phone === '01039941376') {
-                fetch('/api/auth/verify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, name, code: 'MASTER' })
+                fetch('/api/auth/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, name, code: 'MASTER', termsAgreed: true, privacyAgreed: true, marketingAgreed: true })
                 }).then(r => { if (r.ok) window.location.href = '/my/trips'; });
                 return;
             }
 
-            fetch('/api/auth/send-code', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone })
-            }).then(r => {
-                if (r.ok) {
-                    document.getElementById('step1').classList.remove('active');
-                    document.getElementById('step2').classList.add('active');
-                    startTimer();
-                }
-            });
+            fetch('/api/auth/send-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone }) })
+            .then(r => { if (r.ok) { document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); startTimer(); } });
         }
 
         function verify() {
             const phone = document.getElementById('phone').value.trim();
             const name = document.getElementById('name').value.trim();
             const code = document.getElementById('code').value.trim();
-
-            fetch('/api/auth/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone, name, code })
-            }).then(r => {
-                if (r.ok) { window.location.href = '/my'; }
-                else { document.getElementById('error2').textContent = '인증코드가 올바르지 않습니다.'; }
-            });
+            fetch('/api/auth/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, name, code, termsAgreed: document.getElementById('termsAgreed').checked, privacyAgreed: document.getElementById('privacyAgreed').checked, marketingAgreed: document.getElementById('marketingAgreed').checked })
+            }).then(r => { if (r.ok) window.location.href = '/my/trips'; else document.getElementById('error2').textContent = '인증코드가 올바르지 않습니다.'; });
         }
 
         function startTimer() {
-            let sec = 180;
-            clearInterval(countdown);
-            countdown = setInterval(() => {
-                const m = Math.floor(sec / 60);
-                const s = sec % 60;
-                document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
-                if (--sec < 0) { clearInterval(countdown); document.getElementById('timer').textContent = '시간 만료. 재발송해주세요.'; }
-            }, 1000);
+            let sec = 180; clearInterval(countdown);
+            countdown = setInterval(() => { const m = Math.floor(sec/60); const s = sec%60; document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2,'0')}`; if(--sec<0){clearInterval(countdown);document.getElementById('timer').textContent='시간 만료. 재발송해주세요.';} }, 1000);
+        }
+
+        function showModal(type) {
+            const modal = document.getElementById('modal'); const content = document.getElementById('modalContent');
+            if (type === 'terms') { content.innerHTML = '<h3>이용약관</h3><p style="margin-top:1rem;line-height:1.8;">1. 본 서비스는 고투몽골이 제공하는 몽골 투어 예약 서비스입니다.<br>2. 예약 확정 후 취소 시 취소 수수료가 발생할 수 있습니다.<br>3. 출발 7일 전: 전액 환불 / 3~6일 전: 50% 환불 / 2일 이내: 환불 불가<br>4. 현지 사정에 의한 일정 변경은 면책됩니다.<br>5. 여행자 보험 가입을 권장합니다.</p>'; }
+            else { content.innerHTML = '<h3>개인정보 수집·이용 동의</h3><p style="margin-top:1rem;line-height:1.8;"><b>수집 항목:</b> 이름, 핸드폰 번호, 이메일(선택)<br><b>수집 목적:</b> 투어 예약, 일정 안내, 고객 상담<br><b>보유 기간:</b> 서비스 이용 종료 후 1년<br><br>동의하지 않을 경우 서비스 이용이 제한될 수 있습니다.</p>'; }
+            modal.style.display = 'flex';
         }
     </script>
+    <div id="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:1000;" onclick="this.style.display='none'">
+        <div style="background:white;padding:2rem;border-radius:12px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;color:#333;" onclick="event.stopPropagation()">
+            <div id="modalContent"></div>
+            <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:1.5rem;padding:0.6rem 1.5rem;background:#ff6b35;color:white;border:none;border-radius:6px;cursor:pointer;">확인</button>
+        </div>
+    </div>
 </body>
 </html>

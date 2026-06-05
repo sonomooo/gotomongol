@@ -33,8 +33,8 @@ class AuthApplication(
         return true
     }
 
-    fun loginOrRegister(phone: String, name: String): User {
-        return userService.findOrCreate(phone, name)
+    fun loginOrRegister(phone: String, name: String, termsAgreed: Boolean = true, privacyAgreed: Boolean = true, marketingAgreed: Boolean = false): User {
+        return userService.findOrCreate(phone, name, termsAgreed, privacyAgreed, marketingAgreed)
     }
 
     fun findUserById(id: Long): User {

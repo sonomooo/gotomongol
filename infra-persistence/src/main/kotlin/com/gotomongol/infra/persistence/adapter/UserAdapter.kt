@@ -23,12 +23,14 @@ class UserAdapter(private val repo: JpaUserRepository) : UserPort {
 
     private fun UserEntity.toDomain() = User(
         id = id, name = name, phone = phone, email = email,
-        role = com.gotomongol.domain.user.UserRole.valueOf(role.name)
+        role = com.gotomongol.domain.user.UserRole.valueOf(role.name),
+        termsAgreed = termsAgreed, privacyAgreed = privacyAgreed, marketingAgreed = marketingAgreed
     )
 
     private fun User.toEntity() = UserEntity(
         name = name, phone = phone, email = email,
-        role = UserRole.valueOf(role.name)
+        role = UserRole.valueOf(role.name),
+        termsAgreed = termsAgreed, privacyAgreed = privacyAgreed, marketingAgreed = marketingAgreed
     ).also { if (id != 0L) setId(it, id) }
 
     private fun setId(entity: UserEntity, id: Long) {

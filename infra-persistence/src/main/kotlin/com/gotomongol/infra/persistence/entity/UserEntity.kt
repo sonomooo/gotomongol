@@ -13,7 +13,11 @@ class UserEntity(
     var email: String? = null,
 
     @Enumerated(EnumType.STRING)
-    var role: UserRole = UserRole.USER
+    var role: UserRole = UserRole.USER,
+
+    var termsAgreed: Boolean = false,
+    var privacyAgreed: Boolean = false,
+    var marketingAgreed: Boolean = false
 ) : BaseEntity()
 
 enum class UserRole {

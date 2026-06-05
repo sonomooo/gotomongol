@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(private val userPort: UserPort) {
 
     @Transactional
-    fun findOrCreate(phone: String, name: String): User {
-        return userPort.findByPhone(phone) ?: userPort.save(User(name = name, phone = phone))
+    fun findOrCreate(phone: String, name: String, termsAgreed: Boolean = true, privacyAgreed: Boolean = true, marketingAgreed: Boolean = false): User {
+        return userPort.findByPhone(phone) ?: userPort.save(
+            User(name = name, phone = phone, termsAgreed = termsAgreed, privacyAgreed = privacyAgreed, marketingAgreed = marketingAgreed)
+        )
     }
 
     fun findByPhone(phone: String): User? {
