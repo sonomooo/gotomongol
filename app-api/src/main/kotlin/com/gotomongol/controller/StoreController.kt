@@ -8,6 +8,7 @@ import com.gotomongol.application.dto.BookingCommand
 import com.gotomongol.application.dto.QuoteSubmitCommand
 import com.gotomongol.domain.port.ActivityItemPort
 import com.gotomongol.domain.port.BoardPostPort
+import com.gotomongol.domain.port.FoodItemPort
 import com.gotomongol.domain.port.SiteConfigPort
 import com.gotomongol.domain.port.SpotItemPort
 import com.gotomongol.domain.response.ServiceErrorType
@@ -29,6 +30,7 @@ class StoreController(
     private val siteConfigPort: SiteConfigPort,
     private val spotItemPort: SpotItemPort,
     private val activityItemPort: ActivityItemPort,
+    private val foodItemPort: FoodItemPort,
     private val boardPostPort: BoardPostPort
 ) {
 
@@ -52,6 +54,7 @@ class StoreController(
     fun customForm(model: Model): String {
         model.addAttribute("allSpots", spotItemPort.findActive().map { it.name })
         model.addAttribute("allActivities", activityItemPort.findActive().map { it.name })
+        model.addAttribute("allFoods", foodItemPort.findActive().map { it.name })
         return "custom"
     }
 

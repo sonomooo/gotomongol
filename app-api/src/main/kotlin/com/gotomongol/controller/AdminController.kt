@@ -6,6 +6,7 @@ import com.gotomongol.application.dto.TripRegisterCommand
 import com.gotomongol.domain.port.SiteConfigPort
 import com.gotomongol.domain.port.SpotItemPort
 import com.gotomongol.domain.port.ActivityItemPort
+import com.gotomongol.domain.port.FoodItemPort
 import com.gotomongol.domain.port.BoardPostPort
 import com.gotomongol.domain.port.TourPort
 import com.gotomongol.domain.port.UserPort
@@ -34,6 +35,7 @@ class AdminController(
     private val siteConfigPort: SiteConfigPort,
     private val spotItemPort: SpotItemPort,
     private val activityItemPort: ActivityItemPort,
+    private val foodItemPort: FoodItemPort,
     private val boardPostPort: BoardPostPort,
     private val userPort: UserPort,
     @Value("\${upload.path:./uploads}") private val uploadPath: String
@@ -233,6 +235,7 @@ class AdminController(
     fun catalogPage(model: Model): String {
         model.addAttribute("spots", spotItemPort.findAll())
         model.addAttribute("activities", activityItemPort.findAll())
+        model.addAttribute("foods", foodItemPort.findAll())
         return "admin/catalog"
     }
 
@@ -248,6 +251,12 @@ class AdminController(
         return "redirect:/admin/catalog"
     }
 
+    @PostMapping("/catalog/food")
+    fun addFood(@RequestParam name: String, @RequestParam(defaultValue = "0") price: Int): String {
+        foodItemPort.save(com.gotomongol.domain.tour.FoodItem(name = name, price = price))
+        return "redirect:/admin/catalog"
+    }
+
     @PostMapping("/catalog/spot/{id}/delete")
     fun deleteSpot(@PathVariable id: Long): String {
         spotItemPort.deleteById(id)
@@ -257,6 +266,12 @@ class AdminController(
     @PostMapping("/catalog/activity/{id}/delete")
     fun deleteActivity(@PathVariable id: Long): String {
         activityItemPort.deleteById(id)
+        return "redirect:/admin/catalog"
+    }
+
+    @PostMapping("/catalog/food/{id}/delete")
+    fun deleteFood(@PathVariable id: Long): String {
+        foodItemPort.deleteById(id)
         return "redirect:/admin/catalog"
     }
 

@@ -119,6 +119,13 @@
                 <input type="text" name="activities" placeholder="기타 - 직접 입력" style="margin-top:0.5rem;">
             </div>
             <div class="form-group">
+                <label>먹고 싶은 음식 (복수 선택)</label>
+                <div class="checkbox-group">
+                    <label th:each="food : ${allFoods}"><input type="checkbox" name="foods" th:value="${food}"> <span th:text="${food}">음식</span></label>
+                </div>
+                <input type="text" name="foods" placeholder="기타 - 직접 입력" style="margin-top:0.5rem;">
+            </div>
+            <div class="form-group">
                 <label>숙소 등급 *</label>
                 <select name="accommodationType" required>
                     <option value="CAMP">캠프 (기본)</option>

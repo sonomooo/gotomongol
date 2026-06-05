@@ -81,6 +81,22 @@
                 <button type="submit">추가</button>
             </form>
         </div>
+        <div class="section">
+            <h3>🍖 먹고 싶은 음식</h3>
+            <div class="items">
+                <div th:each="food : ${foods}" class="item">
+                    <span th:text="${food.name} + ' (' + ${#numbers.formatInteger(food.price, 0, 'COMMA')} + '원)'">허르헉 (20,000원)</span>
+                    <form th:action="@{/admin/catalog/food/{id}/delete(id=${food.id})}" method="post">
+                        <button type="submit">×</button>
+                    </form>
+                </div>
+            </div>
+            <form action="/admin/catalog/food" method="post" class="add-form">
+                <input type="text" name="name" placeholder="음식 이름" required>
+                <input type="number" name="price" placeholder="금액 (원)" value="0" style="max-width:120px;">
+                <button type="submit">추가</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

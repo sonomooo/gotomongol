@@ -21,3 +21,13 @@ class ActivityItemEntity(
     val price: Int = 0,
     val active: Boolean = true
 )
+
+@Entity
+@Table(name = "food_items")
+class FoodItemEntity(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
+    val name: String = "",
+    val price: Int = 0,
+    val active: Boolean = true
+)
