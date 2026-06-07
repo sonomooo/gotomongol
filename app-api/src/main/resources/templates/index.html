@@ -192,20 +192,17 @@
                 <p th:text="#{review.subtitle}">고투몽골과 함께한</p>
             </div>
             <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="text">"정해진 코스가 아니라 우리가 원하는 대로 설계해줘서 정말 만족스러운 여행이었습니다. 가이드분이 한국어로 설명해주셔서 몽골의 문화를 깊이 이해할 수 있었어요."</p>
-                    <p class="author">김○○, 서울</p>
+                <!-- DB 후기 있으면 표시 -->
+                <div th:each="r : ${reviews}" class="testimonial-card">
+                    <div class="stars" th:text="${'★'.repeat(r.rating) + '☆'.repeat(5 - r.rating)}">★★★★★</div>
+                    <p class="text" th:text="'&quot;' + ${r.content.length() > 100 ? r.content.substring(0, 100) + '...' : r.content} + '&quot;'">후기 내용</p>
+                    <p class="author" th:text="${r.tourName}">투어명</p>
                 </div>
-                <div class="testimonial-card">
+                <!-- DB 후기 없으면 기본 표시 -->
+                <div th:if="${#lists.isEmpty(reviews)}" class="testimonial-card">
                     <div class="stars">★★★★★</div>
-                    <p class="text">"홉스골 호수에서의 승마 체험이 잊을 수 없어요. 아이들도 안전하게 즐길 수 있도록 세심하게 신경써주셔서 가족 여행으로 최고였습니다."</p>
-                    <p class="author">박○○, 부산</p>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="text">"다른 투어 업체들은 코스가 정해져 있어서 자유도가 없었는데, 여기는 진짜 우리만의 여행을 만들어줬어요. 견적도 투명하고 응답도 빨랐습니다."</p>
-                    <p class="author">이○○, 인천</p>
+                    <p class="text">"첫 후기를 기다리고 있습니다. 고투몽골과 함께 잊지 못할 여행을 경험해보세요."</p>
+                    <p class="author">GoToMongol</p>
                 </div>
             </div>
             <p style="text-align:center; margin-top:2rem;"><a href="/reviews" style="color:#ff6b35; text-decoration:none; font-weight:500;" th:text="#{review.viewall}">모든 후기 보기 →</a></p>
@@ -221,10 +218,13 @@
 
     <!-- Footer -->
     <footer>
-        <p>© 2026 고투몽골 (GoToMongol). All rights reserved.</p>
-        <p style="margin-top:0.5rem;">
+        <p><strong>고투몽골 (GoToMongol)</strong></p>
+        <p style="margin-top:0.5rem;">대표: 유석진 | 연락처: 010-3994-1376 | 이메일: gotomongol@gmail.com</p>
+        <p style="margin-top:0.3rem;">소재지: 몽골 울란바토르</p>
+        <p style="margin-top:0.8rem;">
             <a href="/terms">이용약관</a> | <a href="/privacy">개인정보처리방침</a>
         </p>
+        <p style="margin-top:0.5rem;">© 2026 GoToMongol. All rights reserved.</p>
     </footer>
 
     <script>

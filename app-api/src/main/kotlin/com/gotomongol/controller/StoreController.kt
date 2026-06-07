@@ -39,6 +39,7 @@ class StoreController(
     @GetMapping("/")
     fun home(model: Model): String {
         model.addAttribute("tours", tripApp.findActiveTours())
+        model.addAttribute("reviews", reviewApp.findAll().take(3))
         val configs = siteConfigPort.findAll().associateBy { it.configKey }
         model.addAttribute("site", configs.mapValues { it.value.configValue })
         return "index"
