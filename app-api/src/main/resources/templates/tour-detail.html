@@ -43,6 +43,12 @@
 
         <a th:href="@{/custom(tourName=${tour.name}, spots=${#strings.listJoin(tour.spots, ',')}, activities=${#strings.listJoin(tour.activities, ',')}, days=${tour.days})}" class="btn">이 코스 기반으로 커스텀하기 →</a>
 
+        <!-- 지도 -->
+        <div style="margin-top:2rem;" th:if="${!tour.spots.isEmpty()}">
+            <h3 style="margin-bottom:0.8rem;">🗺️ 방문 지역</h3>
+            <iframe th:src="'https://www.google.com/maps?q=' + ${#strings.listJoin(tour.spots, '+')} + '+몽골&output=embed'" width="100%" height="250" style="border:0; border-radius:8px;" allowfullscreen loading="lazy"></iframe>
+        </div>
+
         <div th:if="${tour.detailContent != null}" style="margin-top:2rem; line-height:1.8;" th:utext="${tour.detailContent}"></div>
     </div>
 </body>
