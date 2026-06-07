@@ -68,6 +68,16 @@ class StoreController(
         return "login"
     }
 
+    @GetMapping("/privacy")
+    fun privacyPage(): String {
+        return "privacy"
+    }
+
+    @GetMapping("/terms")
+    fun termsPage(): String {
+        return "terms"
+    }
+
     @GetMapping("/booking")
     fun bookingPage(): String {
         return "booking"
