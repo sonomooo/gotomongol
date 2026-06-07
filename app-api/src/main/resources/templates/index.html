@@ -108,19 +108,19 @@
             <a href="?lang=mn" style="text-decoration:none; font-size:1.1rem;">🇲🇳</a>
         </div>
         <div class="links desktop-only">
-            <a href="/board">여행정보</a>
-            <a href="/reviews">후기</a>
-            <a href="/my/trips">내 여행</a>
-            <a href="/custom" class="cta-btn">무료 견적 받기</a>
+            <a href="/board" th:text="#{nav.board}">여행정보</a>
+            <a href="/reviews" th:text="#{nav.reviews}">후기</a>
+            <a href="/my/trips" th:text="#{nav.mytrips}">내 여행</a>
+            <a href="/custom" class="cta-btn" th:text="#{nav.estimate}">무료 견적 받기</a>
         </div>
         <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
     </nav>
     <div id="mobileMenu" class="mobile-menu">
-        <a href="/board">여행정보</a>
-        <a href="/reviews">후기</a>
-        <a href="/my/trips">내 여행</a>
-        <a href="/login">로그인</a>
-        <a href="/custom" style="background:#ff6b35; color:white; border-radius:6px; padding:0.6rem 1rem; text-align:center;">무료 견적 받기</a>
+        <a href="/board" th:text="#{nav.board}">여행정보</a>
+        <a href="/reviews" th:text="#{nav.reviews}">후기</a>
+        <a href="/my/trips" th:text="#{nav.mytrips}">내 여행</a>
+        <a href="/login" th:text="#{nav.login}">로그인</a>
+        <a href="/custom" style="background:#ff6b35; color:white; border-radius:6px; padding:0.6rem 1rem; text-align:center;" th:text="#{nav.estimate}">무료 견적 받기</a>
     </div>
 
     <!-- Hero -->
@@ -128,7 +128,7 @@
         <div class="hero-content">
             <h1 th:text="${site['slogan'] ?: '당신만의 몽골 여행을 설계합니다'}">당신만의 몽골 여행을 설계합니다</h1>
             <p th:text="${site['subText'] ?: '현지 한국어 가이드와 함께하는 프라이빗 맞춤 투어'}">현지 한국어 가이드와 함께하는 프라이빗 맞춤 투어</p>
-            <p class="subtitle">여행 기간, 인원, 예산만 알려주세요. 나머지는 저희가 설계합니다.</p>
+            <p class="subtitle" th:text="#{hero.subtitle}">여행 기간, 인원, 예산만 알려주세요.</p>
             <a href="/custom" class="btn" th:text="#{hero.cta}">무료 견적 받기 →</a>
         </div>
     </div>
@@ -136,29 +136,29 @@
     <!-- Why Us -->
     <div class="section">
         <div class="section-title">
-            <h2>왜 고투몽골인가요?</h2>
-            <p>가족이 운영하는 현지 전문 투어 서비스</p>
+            <h2 th:text="#{why.title}">왜 고투몽골인가요?</h2>
+            <p th:text="#{why.subtitle}">가족이 운영하는 현지 전문 투어 서비스</p>
         </div>
         <div class="values">
             <div class="value-item">
                 <div class="icon">🗣️</div>
-                <h3>한국어 능통 가이드</h3>
-                <p>현지에서 직접 안내하는 한국어 가이드. 언어 걱정 없이 깊이 있는 여행을 경험하세요.</p>
+                <h3 th:text="#{why.guide.title}">한국어 능통 가이드</h3>
+                <p th:text="#{why.guide.desc}">현지에서 직접 안내하는 한국어 가이드.</p>
             </div>
             <div class="value-item">
                 <div class="icon">✨</div>
-                <h3>100% 맞춤 설계</h3>
-                <p>정해진 코스가 아닌, 당신의 관심사와 일정에 맞춰 설계하는 프라이빗 투어.</p>
+                <h3 th:text="#{why.custom.title}">100% 맞춤 설계</h3>
+                <p th:text="#{why.custom.desc}">정해진 코스가 아닌.</p>
             </div>
             <div class="value-item">
                 <div class="icon">🏕️</div>
-                <h3>현지 거주 운영</h3>
-                <p>몽골에 거주하며 직접 루트를 확인하고 숙소를 점검합니다. 중간 업체 없는 직영.</p>
+                <h3 th:text="#{why.local.title}">현지 거주 운영</h3>
+                <p th:text="#{why.local.desc}">몽골에 거주하며.</p>
             </div>
             <div class="value-item">
                 <div class="icon">💰</div>
-                <h3>투명한 가격</h3>
-                <p>선택한 항목에 따라 실시간 예상 견적을 확인하세요. 숨겨진 비용이 없습니다.</p>
+                <h3 th:text="#{why.price.title}">투명한 가격</h3>
+                <p th:text="#{why.price.desc}">선택한 항목에 따라.</p>
             </div>
         </div>
     </div>
@@ -166,8 +166,8 @@
     <!-- Tour Cards -->
     <div class="section">
         <div class="section-title">
-            <h2>추천 투어 코스</h2>
-            <p>인기 있는 코스를 기반으로 커스텀할 수 있습니다</p>
+            <h2 th:text="#{tour.title}">추천 투어 코스</h2>
+            <p th:text="#{tour.subtitle}">인기 있는 코스를 기반으로</p>
         </div>
         <div class="tour-grid">
             <div class="tour-card" th:each="tour : ${tours}">
@@ -188,8 +188,8 @@
     <div class="testimonials">
         <div class="testimonials-inner">
             <div class="section-title">
-                <h2>여행자 후기</h2>
-                <p>고투몽골과 함께한 여행자들의 이야기</p>
+                <h2 th:text="#{review.title}">여행자 후기</h2>
+                <p th:text="#{review.subtitle}">고투몽골과 함께한</p>
             </div>
             <div class="testimonial-grid">
                 <div class="testimonial-card">
@@ -208,14 +208,14 @@
                     <p class="author">이○○, 인천</p>
                 </div>
             </div>
-            <p style="text-align:center; margin-top:2rem;"><a href="/reviews" style="color:#ff6b35; text-decoration:none; font-weight:500;">모든 후기 보기 →</a></p>
+            <p style="text-align:center; margin-top:2rem;"><a href="/reviews" style="color:#ff6b35; text-decoration:none; font-weight:500;" th:text="#{review.viewall}">모든 후기 보기 →</a></p>
         </div>
     </div>
 
     <!-- CTA -->
     <div class="cta-section">
-        <h2>당신의 몽골 여행을 시작하세요</h2>
-        <p>여행 기간, 인원, 관심사만 알려주시면 24시간 내 맞춤 일정을 보내드립니다.</p>
+        <h2 th:text="#{cta.title}">당신의 몽골 여행을 시작하세요</h2>
+        <p th:text="#{cta.subtitle}">여행 기간, 인원, 관심사만</p>
         <a href="/custom" class="btn">무료 견적 받기 →</a>
     </div>
 
