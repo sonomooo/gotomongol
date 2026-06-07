@@ -25,6 +25,18 @@
         nav .links .cta-btn:hover { background: #e55a2b; color: white; }
         nav .lang { display: flex; gap: 0.5rem; margin-left: 1rem; }
         nav .lang a { font-size: 0.8rem; color: #999; text-decoration: none; }
+        .hamburger { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333; }
+        .mobile-menu { display: none; position: fixed; top: 56px; left: 0; width: 100%; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 99; flex-direction: column; padding: 1rem 2rem; gap: 1rem; }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a { color: #333; text-decoration: none; font-size: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; }
+
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            .desktop-only { display: none !important; }
+        }
+        @media (min-width: 769px) {
+            .mobile-menu { display: none !important; }
+        }
 
         /* Hero */
         .hero { height: 100vh; background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.5)), url('/uploads/hero.jpg') center/cover no-repeat; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
@@ -79,7 +91,6 @@
         footer a { color: #999; margin: 0 0.5rem; }
 
         @media (max-width: 768px) {
-            nav .links { gap: 0.8rem; font-size: 0.8rem; }
             .hero-content h1 { font-size: 1.8rem; }
             .hero-content p { font-size: 1rem; }
             .hero { height: 80vh; }
@@ -91,15 +102,26 @@
 </head>
 <body>
     <nav>
-        <a href="/" class="logo">🇲🇳 GoToMongol</a>
-        <div class="links">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+            <a href="?lang=ko" style="text-decoration:none; font-size:1.1rem;">🇰🇷</a>
+            <a href="/" class="logo">GoToMongol</a>
+            <a href="?lang=mn" style="text-decoration:none; font-size:1.1rem;">🇲🇳</a>
+        </div>
+        <div class="links desktop-only">
             <a href="/board">여행정보</a>
             <a href="/reviews">후기</a>
             <a href="/my/trips">내 여행</a>
             <a href="/custom" class="cta-btn">무료 견적 받기</a>
-            <span class="lang"><a href="?lang=ko">🇰🇷</a><a href="?lang=mn">🇲🇳</a></span>
         </div>
+        <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
     </nav>
+    <div id="mobileMenu" class="mobile-menu">
+        <a href="/board">여행정보</a>
+        <a href="/reviews">후기</a>
+        <a href="/my/trips">내 여행</a>
+        <a href="/login">로그인</a>
+        <a href="/custom" style="background:#ff6b35; color:white; border-radius:6px; padding:0.6rem 1rem; text-align:center;">무료 견적 받기</a>
+    </div>
 
     <!-- Hero -->
     <div class="hero" th:style="'height:100vh; background:linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.5))' + (${site['heroImage'] != null} ? ',url(' + ${site['heroImage']} + ')' : ',url(/icons/icon.svg)') + ' center/cover no-repeat; display:flex; align-items:center; justify-content:center; text-align:center; color:white;'">
