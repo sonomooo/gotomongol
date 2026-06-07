@@ -287,17 +287,13 @@
             const groupSize = parseInt(document.querySelector('[name="groupSize"]').value) || 2;
             const spots = [...document.querySelectorAll('input[name="spots"]:checked')].map(el => el.value);
             const activities = [...document.querySelectorAll('input[name="activities"]:checked')].map(el => el.value);
+            const foods = [...document.querySelectorAll('input[name="foods"]:checked')].map(el => el.value);
             const accommodation = document.querySelector('[name="accommodationType"]').value;
-
-            if (spots.length === 0 && activities.length === 0) {
-                document.getElementById('estimateBox').style.display = 'none';
-                return;
-            }
 
             fetch('/api/estimate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ days, groupSize, spots, activities, accommodation })
+                body: JSON.stringify({ days, groupSize, spots, activities, foods, accommodation })
             })
             .then(r => r.json())
             .then(res => {
@@ -315,7 +311,7 @@
         }
 
         // 선택 변경 시 자동 계산
-        document.querySelectorAll('input[name="spots"], input[name="activities"]').forEach(el => {
+        document.querySelectorAll('input[name="spots"], input[name="activities"], input[name="foods"]').forEach(el => {
             el.addEventListener('change', calcEstimate);
         });
         document.getElementById('daysSelect').addEventListener('change', calcEstimate);

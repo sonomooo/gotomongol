@@ -248,6 +248,7 @@ class StoreController(
             groupSize = (body["groupSize"] as Number).toInt(),
             spots = (body["spots"] as? List<*>)?.map { it.toString() } ?: emptyList(),
             activities = (body["activities"] as? List<*>)?.map { it.toString() } ?: emptyList(),
+            foods = (body["foods"] as? List<*>)?.map { it.toString() } ?: emptyList(),
             accommodation = body["accommodation"] as? String ?: "CAMP"
         )
         return ServiceResponse.success(result)

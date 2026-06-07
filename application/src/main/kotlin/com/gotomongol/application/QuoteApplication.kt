@@ -3,6 +3,7 @@ package com.gotomongol.application
 import com.gotomongol.application.dto.QuoteSubmitCommand
 import com.gotomongol.domain.event.QuoteSubmittedEvent
 import com.gotomongol.domain.port.ActivityItemPort
+import com.gotomongol.domain.port.FoodItemPort
 import com.gotomongol.domain.port.PriceConfigPort
 import com.gotomongol.domain.port.QuoteRequestPort
 import com.gotomongol.domain.port.SpotItemPort
@@ -22,6 +23,7 @@ class QuoteApplication(
     private val priceConfigPort: PriceConfigPort,
     private val spotItemPort: SpotItemPort,
     private val activityItemPort: ActivityItemPort,
+    private val foodItemPort: FoodItemPort,
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
@@ -38,7 +40,7 @@ class QuoteApplication(
         return quote
     }
 
-    fun estimate(days: Int, groupSize: Int, spots: List<String>, activities: List<String>, accommodation: String): Map<String, Any> {
+    fun estimate(days: Int, groupSize: Int, spots: List<String>, activities: List<String>, foods: List<String>, accommodation: String): Map<String, Any> {
         val configs = priceConfigPort.findAll()
         val configMap = configs.associateBy { "${it.category}_${it.itemName}" }
 
@@ -81,6 +83,16 @@ class QuoteApplication(
             val price = actPriceMap[activity]?.price ?: configMap["ACTIVITY_$activity"]?.pricePerUnit ?: 30000
             total += price
             breakdown.add(mapOf("item" to activity, "amount" to price))
+        }
+
+        // 음식별 추가
+        val foodPriceMap = foodItemPort.findActive().associateBy { it.name }
+        foods.forEach { food ->
+            val price = foodPriceMap[food]?.price ?: 0
+            if (price > 0) {
+                total += price
+                breakdown.add(mapOf("item" to food, "amount" to price))
+            }
         }
 
         return mapOf("total" to total, "breakdown" to breakdown, "perPerson" to total)
