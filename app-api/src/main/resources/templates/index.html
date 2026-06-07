@@ -7,91 +7,206 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="/icons/icon.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="고투몽골">
     <link rel="apple-touch-icon" href="/icons/icon.svg">
-    <title>고투몽골</title>
+    <title>고투몽골 - Go To Mongol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Pretendard', -apple-system, sans-serif; color: #333; }
-        .hero { height: 35vh; background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/hero.jpg') center/cover; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
-        .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-        .hero p { font-size: 1rem; margin-bottom: 1.5rem; }
-        .btn { display: inline-block; padding: 1rem 2rem; background: #ff6b35; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
-        .btn:hover { background: #e55a2b; }
-        .section { max-width: 1200px; margin: 4rem auto; padding: 0 1rem; }
-        .section h2 { font-size: 1.8rem; margin-bottom: 2rem; text-align: center; }
+        body { font-family: 'Noto Sans KR', -apple-system, sans-serif; color: #333; }
+
+        /* Nav */
+        nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); box-shadow: 0 1px 8px rgba(0,0,0,0.06); padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        nav .logo { font-weight: 700; font-size: 1.2rem; color: #ff6b35; text-decoration: none; }
+        nav .links { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+        nav .links a { color: #555; text-decoration: none; transition: color 0.2s; }
+        nav .links a:hover { color: #ff6b35; }
+        nav .links .cta-btn { background: #ff6b35; color: white; padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: 500; }
+        nav .links .cta-btn:hover { background: #e55a2b; color: white; }
+        nav .lang { display: flex; gap: 0.5rem; margin-left: 1rem; }
+        nav .lang a { font-size: 0.8rem; color: #999; text-decoration: none; }
+
+        /* Hero */
+        .hero { height: 100vh; background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.5)), url('/uploads/hero.jpg') center/cover no-repeat; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
+        .hero-content h1 { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.3; }
+        .hero-content p { font-size: 1.2rem; font-weight: 300; margin-bottom: 0.5rem; opacity: 0.9; }
+        .hero-content .subtitle { font-size: 1rem; margin-bottom: 2.5rem; opacity: 0.8; }
+        .hero-content .btn { display: inline-block; padding: 1rem 2.5rem; background: #ff6b35; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; font-size: 1.1rem; transition: transform 0.2s; }
+        .hero-content .btn:hover { transform: translateY(-2px); background: #e55a2b; }
+
+        /* Section */
+        .section { max-width: 1200px; margin: 5rem auto; padding: 0 2rem; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .section-title h2 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .section-title p { color: #777; font-size: 1rem; }
+
+        /* Tour Cards */
         .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        .tour-card { border: 1px solid #eee; border-radius: 12px; overflow: hidden; transition: transform 0.2s; }
-        .tour-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .tour-card { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.3s, box-shadow 0.3s; background: white; }
+        .tour-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+        .tour-card img { width: 100%; height: 200px; object-fit: cover; }
+        .tour-card .no-img { width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; }
         .tour-card .info { padding: 1.5rem; }
-        .tour-card h3 { margin-bottom: 0.5rem; }
-        .tour-card .price { color: #ff6b35; font-weight: bold; font-size: 1.1rem; }
-        .tour-card .days { color: #666; font-size: 0.9rem; }
+        .tour-card .days { font-size: 0.8rem; color: #ff6b35; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tour-card h3 { margin: 0.5rem 0; font-size: 1.1rem; }
+        .tour-card .price { color: #333; font-weight: 500; }
         .tour-card a { text-decoration: none; color: inherit; }
+
+        /* Value Props */
+        .values { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2.5rem; margin-top: 3rem; }
+        .value-item { text-align: center; padding: 2rem; }
+        .value-item .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .value-item h3 { margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .value-item p { color: #666; line-height: 1.7; font-size: 0.95rem; }
+
+        /* Testimonials */
+        .testimonials { background: #f8f9fa; padding: 5rem 2rem; }
+        .testimonials-inner { max-width: 1200px; margin: 0 auto; }
+        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .testimonial-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .testimonial-card .stars { color: #f59e0b; margin-bottom: 1rem; }
+        .testimonial-card .text { color: #555; line-height: 1.8; font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .testimonial-card .author { font-weight: 500; }
+
+        /* CTA */
+        .cta-section { text-align: center; padding: 5rem 2rem; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; }
+        .cta-section h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .cta-section p { color: #aaa; margin-bottom: 2rem; font-size: 1.1rem; }
+        .cta-section .btn { display: inline-block; padding: 1rem 2.5rem; background: #ff6b35; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; font-size: 1.1rem; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: #999; font-size: 0.85rem; border-top: 1px solid #eee; }
+        footer a { color: #999; margin: 0 0.5rem; }
+
         @media (max-width: 768px) {
-            nav { padding: 0.8rem 1rem !important; }
-            nav div { gap: 1rem !important; font-size: 0.85rem !important; }
-            .hero h1 { font-size: 1.4rem; }
-            .hero p { font-size: 0.9rem; }
-            .hero { height: 30vh; }
-            .section { margin: 2rem auto; }
-            .tour-grid { grid-template-columns: 1fr; }
+            nav .links { gap: 0.8rem; font-size: 0.8rem; }
+            .hero-content h1 { font-size: 1.8rem; }
+            .hero-content p { font-size: 1rem; }
+            .hero { height: 80vh; }
+            .section { margin: 3rem auto; }
+            .section-title h2 { font-size: 1.5rem; }
+            .values { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <nav style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
-        <a href="/" style="font-weight:bold; font-size:1.2rem; color:#ff6b35; text-decoration:none;">🇲🇳 고투몽골</a>
-        <div style="display:flex; gap:1.5rem; font-size:0.95rem; align-items:center;">
-            <a href="/custom" style="color:#333; text-decoration:none;" th:text="#{nav.quote}">견적 요청</a>
-            <a href="/board" style="color:#333; text-decoration:none;">게시판</a>
-            <a href="/my/trips" style="color:#333; text-decoration:none;" th:text="#{nav.mytrips}">내 여행</a>
-            <a href="/reviews" style="color:#333; text-decoration:none;" th:text="#{nav.reviews}">후기</a>
-            <a href="/login" style="color:#ff6b35; text-decoration:none; font-weight:bold;" th:text="#{nav.login}">로그인</a>
-            <span style="color:#ccc;">|</span>
-            <a href="?lang=ko" style="color:#333; text-decoration:none; font-size:0.85rem;">🇰🇷</a>
-            <a href="?lang=mn" style="color:#333; text-decoration:none; font-size:0.85rem;">🇲🇳</a>
+    <nav>
+        <a href="/" class="logo">🇲🇳 GoToMongol</a>
+        <div class="links">
+            <a href="/board">여행정보</a>
+            <a href="/reviews">후기</a>
+            <a href="/my/trips">내 여행</a>
+            <a href="/custom" class="cta-btn">무료 견적 받기</a>
+            <span class="lang"><a href="?lang=ko">🇰🇷</a><a href="?lang=mn">🇲🇳</a></span>
         </div>
     </nav>
 
-    <div class="hero" th:style="'height:70vh; background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4))' + (${site['heroImage'] != null} ? ',url(' + ${site['heroImage']} + ')' : '') + ' center/cover; display:flex; align-items:center; justify-content:center; text-align:center; color:white;'">
-        <div>
-            <h1 th:text="${site['slogan'] ?: #messages.msg('hero.slogan')}">나만의 몽골 여행을 설계하세요</h1>
-            <p th:text="${site['subText'] ?: #messages.msg('hero.sub')}">정해진 코스 없이, 원하는 곳만 골라 떠나는 프라이빗 투어</p>
-            <a href="/custom" class="btn" th:text="#{hero.cta}">커스텀 투어 만들기 →</a>
+    <!-- Hero -->
+    <div class="hero" th:style="'height:100vh; background:linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.5))' + (${site['heroImage'] != null} ? ',url(' + ${site['heroImage']} + ')' : ',url(/icons/icon.svg)') + ' center/cover no-repeat; display:flex; align-items:center; justify-content:center; text-align:center; color:white;'">
+        <div class="hero-content">
+            <h1 th:text="${site['slogan'] ?: '당신만의 몽골 여행을 설계합니다'}">당신만의 몽골 여행을 설계합니다</h1>
+            <p th:text="${site['subText'] ?: '현지 한국어 가이드와 함께하는 프라이빗 맞춤 투어'}">현지 한국어 가이드와 함께하는 프라이빗 맞춤 투어</p>
+            <p class="subtitle">여행 기간, 인원, 예산만 알려주세요. 나머지는 저희가 설계합니다.</p>
+            <a href="/custom" class="btn" th:text="#{hero.cta}">무료 견적 받기 →</a>
         </div>
     </div>
 
+    <!-- Why Us -->
     <div class="section">
-        <h2 th:text="#{tour.recommended}">추천 코스</h2>
+        <div class="section-title">
+            <h2>왜 고투몽골인가요?</h2>
+            <p>가족이 운영하는 현지 전문 투어 서비스</p>
+        </div>
+        <div class="values">
+            <div class="value-item">
+                <div class="icon">🗣️</div>
+                <h3>한국어 능통 가이드</h3>
+                <p>현지에서 직접 안내하는 한국어 가이드. 언어 걱정 없이 깊이 있는 여행을 경험하세요.</p>
+            </div>
+            <div class="value-item">
+                <div class="icon">✨</div>
+                <h3>100% 맞춤 설계</h3>
+                <p>정해진 코스가 아닌, 당신의 관심사와 일정에 맞춰 설계하는 프라이빗 투어.</p>
+            </div>
+            <div class="value-item">
+                <div class="icon">🏕️</div>
+                <h3>현지 거주 운영</h3>
+                <p>몽골에 거주하며 직접 루트를 확인하고 숙소를 점검합니다. 중간 업체 없는 직영.</p>
+            </div>
+            <div class="value-item">
+                <div class="icon">💰</div>
+                <h3>투명한 가격</h3>
+                <p>선택한 항목에 따라 실시간 예상 견적을 확인하세요. 숨겨진 비용이 없습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tour Cards -->
+    <div class="section">
+        <div class="section-title">
+            <h2>추천 투어 코스</h2>
+            <p>인기 있는 코스를 기반으로 커스텀할 수 있습니다</p>
+        </div>
         <div class="tour-grid">
             <div class="tour-card" th:each="tour : ${tours}">
                 <a th:href="@{/tours/{id}(id=${tour.id})}">
-                    <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}" style="width:100%; height:180px; object-fit:cover; border-radius:12px 12px 0 0;">
-                    <div th:if="${tour.imageUrl == null}" style="width:100%; height:180px; background:#f0f0f0; border-radius:12px 12px 0 0; display:flex; align-items:center; justify-content:center; color:#999;">📷</div>
+                    <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}">
+                    <div th:if="${tour.imageUrl == null}" class="no-img">🇲🇳</div>
                     <div class="info">
+                        <p class="days" th:text="${tour.days} + ' DAYS'">5 DAYS</p>
                         <h3 th:text="${tour.name}">투어명</h3>
-                        <p class="days" th:text="${tour.days} + '박' + (${tour.days} + 1) + '일'">4박5일</p>
                         <p class="price" th:text="'₩' + ${#numbers.formatInteger(tour.minPrice, 0, 'COMMA')} + ' ~'">₩800,000 ~</p>
-                        <p th:text="${tour.description}" style="margin-top:0.5rem; color:#666; font-size:0.9rem;">설명</p>
                     </div>
                 </a>
             </div>
         </div>
-        <p style="text-align:center; margin-top:2rem; color:#666; line-height:1.8;" th:text="#{tour.customizable}">당신이 원하는 몽골 여행을 만들어드립니다. 여행 기간, 인원, 예산을 알려주세요. 현지 한국어 가이드가 맞춤 일정을 설계합니다.</p>
     </div>
-    <footer style="text-align:center; padding:2rem 1rem; color:#999; font-size:0.85rem; border-top:1px solid #eee; margin-top:3rem;">
+
+    <!-- Testimonials -->
+    <div class="testimonials">
+        <div class="testimonials-inner">
+            <div class="section-title">
+                <h2>여행자 후기</h2>
+                <p>고투몽골과 함께한 여행자들의 이야기</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="text">"정해진 코스가 아니라 우리가 원하는 대로 설계해줘서 정말 만족스러운 여행이었습니다. 가이드분이 한국어로 설명해주셔서 몽골의 문화를 깊이 이해할 수 있었어요."</p>
+                    <p class="author">김○○, 서울</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="text">"홉스골 호수에서의 승마 체험이 잊을 수 없어요. 아이들도 안전하게 즐길 수 있도록 세심하게 신경써주셔서 가족 여행으로 최고였습니다."</p>
+                    <p class="author">박○○, 부산</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="text">"다른 투어 업체들은 코스가 정해져 있어서 자유도가 없었는데, 여기는 진짜 우리만의 여행을 만들어줬어요. 견적도 투명하고 응답도 빨랐습니다."</p>
+                    <p class="author">이○○, 인천</p>
+                </div>
+            </div>
+            <p style="text-align:center; margin-top:2rem;"><a href="/reviews" style="color:#ff6b35; text-decoration:none; font-weight:500;">모든 후기 보기 →</a></p>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h2>당신의 몽골 여행을 시작하세요</h2>
+        <p>여행 기간, 인원, 관심사만 알려주시면 24시간 내 맞춤 일정을 보내드립니다.</p>
+        <a href="/custom" class="btn">무료 견적 받기 →</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
         <p>© 2026 고투몽골 (GoToMongol). All rights reserved.</p>
         <p style="margin-top:0.5rem;">
-            <a href="/terms" style="color:#999; margin-right:1rem;">이용약관</a>
-            <a href="/privacy" style="color:#999;">개인정보처리방침</a>
+            <a href="/terms">이용약관</a> | <a href="/privacy">개인정보처리방침</a>
         </p>
     </footer>
+
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
     </script>
 </body>
 </html>
