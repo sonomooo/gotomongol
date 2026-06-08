@@ -8,15 +8,17 @@ import java.time.LocalDate
 
 interface UserPort {
     fun findByPhone(phone: String): User?
+    fun findByEmail(email: String): User?
     fun findById(id: Long): User?
     fun save(user: User): User
     fun existsByPhone(phone: String): Boolean
+    fun existsByEmail(email: String): Boolean
     fun count(): Long
 }
 
 interface VerificationCodePort {
     fun save(code: VerificationCode): VerificationCode
-    fun findLatestByPhone(phone: String): VerificationCode?
+    fun findLatestByTarget(target: String): VerificationCode?
     fun markVerified(id: Long)
 }
 

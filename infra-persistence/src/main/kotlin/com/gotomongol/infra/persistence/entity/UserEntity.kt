@@ -8,8 +8,9 @@ class UserEntity(
     var name: String,
 
     @Column(unique = true)
-    val phone: String,
+    val phone: String? = null,
 
+    @Column(unique = true)
     var email: String? = null,
 
     @Enumerated(EnumType.STRING)

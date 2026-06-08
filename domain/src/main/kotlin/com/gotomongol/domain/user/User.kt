@@ -3,7 +3,7 @@ package com.gotomongol.domain.user
 data class User(
     val id: Long = 0,
     val name: String,
-    val phone: String,
+    val phone: String? = null,
     val email: String? = null,
     val role: UserRole = UserRole.USER,
     val termsAgreed: Boolean = false,

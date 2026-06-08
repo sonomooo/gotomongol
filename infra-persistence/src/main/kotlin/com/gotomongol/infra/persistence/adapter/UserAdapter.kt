@@ -12,13 +12,11 @@ import org.springframework.stereotype.Component
 class UserAdapter(private val repo: JpaUserRepository) : UserPort {
 
     override fun findByPhone(phone: String): User? = repo.findByPhone(phone)?.toDomain()
-
+    override fun findByEmail(email: String): User? = repo.findByEmail(email)?.toDomain()
     override fun findById(id: Long): User? = repo.findByIdOrNull(id)?.toDomain()
-
     override fun save(user: User): User = repo.save(user.toEntity()).toDomain()
-
     override fun existsByPhone(phone: String): Boolean = repo.existsByPhone(phone)
-
+    override fun existsByEmail(email: String): Boolean = repo.existsByEmail(email)
     override fun count(): Long = repo.count()
 
     private fun UserEntity.toDomain() = User(

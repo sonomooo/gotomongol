@@ -9,11 +9,28 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class UserService(private val userPort: UserPort) {
 
+    /**
+     * target (email or phone)으로 유저 조회 또는 생성
+     */
     @Transactional
-    fun findOrCreate(phone: String, name: String, termsAgreed: Boolean = true, privacyAgreed: Boolean = true, marketingAgreed: Boolean = false): User {
-        return userPort.findByPhone(phone) ?: userPort.save(
-            User(name = name, phone = phone, termsAgreed = termsAgreed, privacyAgreed = privacyAgreed, marketingAgreed = marketingAgreed)
-        )
+    fun findOrCreate(target: String, name: String, termsAgreed: Boolean = true, privacyAgreed: Boolean = true, marketingAgreed: Boolean = false): User {
+        val existing = findByTarget(target)
+        if (existing != null) return existing
+
+        val isEmail = target.contains("@")
+        return userPort.save(User(
+            name = name,
+            phone = if (!isEmail) target else null,
+            email = if (isEmail) target else null,
+            termsAgreed = termsAgreed,
+            privacyAgreed = privacyAgreed,
+            marketingAgreed = marketingAgreed
+        ))
+    }
+
+    fun findByTarget(target: String): User? {
+        return if (target.contains("@")) userPort.findByEmail(target)
+        else userPort.findByPhone(target)
     }
 
     fun findByPhone(phone: String): User? {

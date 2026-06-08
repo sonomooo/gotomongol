@@ -128,21 +128,24 @@ class StoreController(
     @PostMapping("/api/auth/send-code")
     @ResponseBody
     fun sendCode(@RequestBody body: Map<String, Any>): ServiceResponse<Nothing> {
-        authApp.sendCode(body["phone"] as String)
+        val target = body["target"] as? String ?: body["phone"] as String
+        val type = (body["type"] as? String)?.let { com.gotomongol.domain.user.VerificationType.valueOf(it) }
+            ?: com.gotomongol.domain.user.VerificationType.LOGIN
+        authApp.sendCode(target, type)
         return ServiceResponse.success()
     }
 
     @PostMapping("/api/auth/verify")
     @ResponseBody
     fun verify(@RequestBody body: Map<String, Any>, session: HttpSession): ServiceResponse<User> {
-        val phone = body["phone"] as String
+        val target = body["target"] as? String ?: body["phone"] as? String ?: ""
         val code = body["code"] as String
         val name = body["name"] as? String ?: ""
         val termsAgreed = body["termsAgreed"] as? Boolean ?: false
         val privacyAgreed = body["privacyAgreed"] as? Boolean ?: false
         val marketingAgreed = body["marketingAgreed"] as? Boolean ?: false
-        if (!authApp.verify(phone, code)) return ServiceResponse.error(ServiceErrorType.VERIFICATION_FAILED)
-        val user = authApp.loginOrRegister(phone, name, termsAgreed, privacyAgreed, marketingAgreed)
+        if (!authApp.verify(target, code)) return ServiceResponse.error(ServiceErrorType.VERIFICATION_FAILED)
+        val user = authApp.loginOrRegister(target, name, termsAgreed, privacyAgreed, marketingAgreed)
         session.setAttribute("userId", user.id)
         return ServiceResponse.success(user)
     }
