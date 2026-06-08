@@ -134,7 +134,8 @@
     </div>
 
     <!-- Why Us -->
-    <div class="section">
+    <div class="section" style="background:#faf8f5; padding:5rem 2rem; margin:0; max-width:none;">
+        <div style="max-width:1200px; margin:0 auto;">
         <div class="section-title">
             <h2 th:text="#{why.title}">왜 고투몽골인가요?</h2>
             <p th:text="#{why.subtitle}">가족이 운영하는 현지 전문 투어 서비스</p>
@@ -159,6 +160,37 @@
                 <div class="icon">💰</div>
                 <h3 th:text="#{why.price.title}">투명한 가격</h3>
                 <p th:text="#{why.price.desc}">선택한 항목에 따라.</p>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Process -->
+    <div class="section">
+        <div class="section-title">
+            <h2>간단한 4단계</h2>
+            <p>문의부터 출발까지, 이렇게 진행됩니다</p>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:2rem; text-align:center;">
+            <div>
+                <div style="font-size:2rem; margin-bottom:0.5rem;">1️⃣</div>
+                <h4>견적 요청</h4>
+                <p style="color:#777; font-size:0.9rem; margin-top:0.3rem;">원하는 일정·인원·관심사 입력</p>
+            </div>
+            <div>
+                <div style="font-size:2rem; margin-bottom:0.5rem;">2️⃣</div>
+                <h4>맞춤 설계</h4>
+                <p style="color:#777; font-size:0.9rem; margin-top:0.3rem;">24시간 내 일정표 + 견적 회신</p>
+            </div>
+            <div>
+                <div style="font-size:2rem; margin-bottom:0.5rem;">3️⃣</div>
+                <h4>예약 확정</h4>
+                <p style="color:#777; font-size:0.9rem; margin-top:0.3rem;">일정 조율 후 예약금 입금</p>
+            </div>
+            <div>
+                <div style="font-size:2rem; margin-bottom:0.5rem;">4️⃣</div>
+                <h4>출발!</h4>
+                <p style="color:#777; font-size:0.9rem; margin-top:0.3rem;">공항 픽업부터 가이드 동행</p>
             </div>
         </div>
     </div>
@@ -215,6 +247,9 @@
         <p th:text="#{cta.subtitle}">여행 기간, 인원, 관심사만</p>
         <a href="/custom" class="btn">무료 견적 받기 →</a>
     </div>
+
+    <!-- 카카오톡 플로팅 버튼 -->
+    <a id="kakaoFloat" href="#" th:href="${site['kakaoLink'] ?: 'https://pf.kakao.com'}" target="_blank" style="position:fixed; bottom:2rem; right:2rem; width:56px; height:56px; background:#fee500; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,0.2); z-index:90; text-decoration:none; font-size:1.5rem;" title="카카오톡 문의">💬</a>
 
     <!-- Footer -->
     <footer>
