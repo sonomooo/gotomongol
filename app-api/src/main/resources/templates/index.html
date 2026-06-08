@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ff6b35">
+    <meta name="description" content="원하는 일정, 액티비티, 지역을 선택하면 맞춤형 몽골 여행 일정을 설계해드립니다. 한국어 가이드 동행, 프라이빗 투어 전문.">
+    <meta name="keywords" content="몽골 여행, 몽골 자유여행, 몽골 맞춤여행, 몽골 패키지여행, 몽골 투어, 몽골 고비사막, 몽골 승마, 몽골 홉스골">
+    <meta property="og:title" content="몽골 맞춤여행 전문 | Go To Mongol">
+    <meta property="og:description" content="원하는 일정, 액티비티, 지역을 선택하면 맞춤형 몽골 여행 일정을 설계해드립니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gotomongol.com">
+    <meta property="og:image" content="https://gotomongol.com/icons/icon.svg">
+    <meta property="og:locale" content="ko_KR">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://gotomongol.com/">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="/icons/icon.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="고투몽골">
     <link rel="apple-touch-icon" href="/icons/icon.svg">
-    <title>고투몽골 - Go To Mongol</title>
+    <title>몽골 맞춤여행 전문 | Go To Mongol</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -205,7 +215,7 @@
         <div class="tour-grid">
             <div class="tour-card" th:each="tour : ${tours}">
                 <a th:href="@{/tours/{id}(id=${tour.id})}">
-                    <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}">
+                    <img th:if="${tour.imageUrl != null}" th:src="${tour.imageUrl}" th:alt="${tour.name} + ' - 몽골 투어'" loading="lazy">
                     <div th:if="${tour.imageUrl == null}" class="no-img">🇲🇳</div>
                     <div class="info">
                         <p class="days" th:text="${tour.days} + ' DAYS'">5 DAYS</p>
@@ -248,6 +258,67 @@
         <p th:text="#{cta.subtitle}">여행 기간, 인원, 관심사만</p>
         <a href="/custom" class="btn">무료 견적 받기 →</a>
     </div>
+
+    <!-- FAQ -->
+    <div class="section">
+        <div class="section-title">
+            <h2>자주 묻는 질문</h2>
+        </div>
+        <div style="max-width:800px; margin:0 auto;">
+            <details style="margin-bottom:1rem; padding:1rem; background:white; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+                <summary style="font-weight:500; cursor:pointer;">몽골 여행 최적 시기는 언제인가요?</summary>
+                <p style="margin-top:0.8rem; color:#666; line-height:1.7;">6월~9월이 가장 좋습니다. 초원이 푸르고 기온이 온화합니다. 특히 7~8월은 나담 축제 시즌으로 인기가 높습니다.</p>
+            </details>
+            <details style="margin-bottom:1rem; padding:1rem; background:white; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+                <summary style="font-weight:500; cursor:pointer;">몽골 여행 비용은 얼마인가요?</summary>
+                <p style="margin-top:0.8rem; color:#666; line-height:1.7;">인원과 일정에 따라 다르지만, 2인 기준 5일 투어 약 80~150만원/1인입니다. 견적 요청 시 정확한 금액을 안내드립니다.</p>
+            </details>
+            <details style="margin-bottom:1rem; padding:1rem; background:white; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+                <summary style="font-weight:500; cursor:pointer;">승마 경험이 없어도 가능한가요?</summary>
+                <p style="margin-top:0.8rem; color:#666; line-height:1.7;">네, 초보자도 안전하게 체험 가능합니다. 현지 가이드가 기초부터 안내하며, 온순한 말로 배정됩니다.</p>
+            </details>
+            <details style="margin-bottom:1rem; padding:1rem; background:white; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+                <summary style="font-weight:500; cursor:pointer;">어린아이와 함께 여행 가능한가요?</summary>
+                <p style="margin-top:0.8rem; color:#666; line-height:1.7;">가능합니다. 가족 단위 맞춤 일정을 설계하며, 아이 연령에 맞는 액티비티와 숙소를 제안드립니다.</p>
+            </details>
+            <details style="margin-bottom:1rem; padding:1rem; background:white; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+                <summary style="font-weight:500; cursor:pointer;">비자가 필요한가요?</summary>
+                <p style="margin-top:0.8rem; color:#666; line-height:1.7;">한국 여권 소지자는 30일 이내 무비자 입국 가능합니다. 여권 유효기간이 6개월 이상 남아있어야 합니다.</p>
+            </details>
+        </div>
+    </div>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "GoToMongol (고투몽골)",
+      "url": "https://gotomongol.com",
+      "description": "몽골 맞춤여행 전문. 한국어 가이드 동행 프라이빗 투어.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "MN",
+        "addressLocality": "Ulaanbaatar"
+      },
+      "telephone": "+82-10-3994-1376",
+      "email": "gotomongol@gmail.com",
+      "sameAs": []
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "몽골 여행 최적 시기는 언제인가요?", "acceptedAnswer": {"@type": "Answer", "text": "6월~9월이 가장 좋습니다. 초원이 푸르고 기온이 온화합니다. 특히 7~8월은 나담 축제 시즌으로 인기가 높습니다."}},
+        {"@type": "Question", "name": "몽골 여행 비용은 얼마인가요?", "acceptedAnswer": {"@type": "Answer", "text": "인원과 일정에 따라 다르지만, 2인 기준 5일 투어 약 80~150만원/1인입니다."}},
+        {"@type": "Question", "name": "승마 경험이 없어도 가능한가요?", "acceptedAnswer": {"@type": "Answer", "text": "네, 초보자도 안전하게 체험 가능합니다. 현지 가이드가 기초부터 안내합니다."}},
+        {"@type": "Question", "name": "어린아이와 함께 여행 가능한가요?", "acceptedAnswer": {"@type": "Answer", "text": "가능합니다. 가족 단위 맞춤 일정을 설계하며, 아이 연령에 맞는 액티비티와 숙소를 제안드립니다."}},
+        {"@type": "Question", "name": "비자가 필요한가요?", "acceptedAnswer": {"@type": "Answer", "text": "한국 여권 소지자는 30일 이내 무비자 입국 가능합니다."}}
+      ]
+    }
+    </script>
 
     <!-- 카카오톡 플로팅 버튼 -->
     <a id="kakaoFloat" href="#" th:href="${site['kakaoLink'] ?: 'https://pf.kakao.com'}" target="_blank" style="position:fixed; bottom:2rem; right:2rem; width:56px; height:56px; background:#fee500; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,0.2); z-index:90; text-decoration:none; font-size:1.5rem;" title="카카오톡 문의">💬</a>
