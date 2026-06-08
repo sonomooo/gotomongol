@@ -14,6 +14,7 @@ import com.gotomongol.domain.port.SpotItemPort
 import com.gotomongol.domain.response.ServiceErrorType
 import com.gotomongol.domain.response.ServiceResponse
 import com.gotomongol.domain.user.User
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpSession
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -137,7 +138,7 @@ class StoreController(
 
     @PostMapping("/api/auth/verify")
     @ResponseBody
-    fun verify(@RequestBody body: Map<String, Any>, session: HttpSession): ServiceResponse<User> {
+    fun verify(@RequestBody body: Map<String, Any>, session: HttpSession, response: HttpServletResponse): ServiceResponse<Map<String, Any>> {
         val target = body["target"] as? String ?: body["phone"] as? String ?: ""
         val code = body["code"] as String
         val name = body["name"] as? String ?: ""
@@ -146,8 +147,28 @@ class StoreController(
         val marketingAgreed = body["marketingAgreed"] as? Boolean ?: false
         if (!authApp.verify(target, code)) return ServiceResponse.error(ServiceErrorType.VERIFICATION_FAILED)
         val user = authApp.loginOrRegister(target, name, termsAgreed, privacyAgreed, marketingAgreed)
+
+        // JWT 발급
+        val accessToken = com.gotomongol.infra.auth.JwtTokenUtils.generateAccessToken(user.id)
+        val refreshToken = com.gotomongol.infra.auth.JwtTokenUtils.generateRefreshToken(user.id)
+
+        // Refresh Token → HttpOnly 쿠키
+        val cookie = jakarta.servlet.http.Cookie("refreshToken", refreshToken).apply {
+            isHttpOnly = true
+            secure = true
+            path = "/"
+            maxAge = 7 * 24 * 60 * 60
+            setAttribute("SameSite", "Strict")
+        }
+        response.addCookie(cookie)
+
+        // 세션도 유지 (Thymeleaf 페이지용)
         session.setAttribute("userId", user.id)
-        return ServiceResponse.success(user)
+
+        return ServiceResponse.success(mapOf(
+            "accessToken" to accessToken,
+            "user" to mapOf("id" to user.id, "name" to user.name, "phone" to user.phone, "email" to user.email)
+        ))
     }
 
     @PostMapping("/api/auth/logout")
