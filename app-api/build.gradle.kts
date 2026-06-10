@@ -5,10 +5,7 @@ plugins {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
-    implementation(project(":infra-persistence"))
-    implementation(project(":infra-auth"))
-    implementation(project(":user-core"))
-    implementation(project(":core-notification"))
+    implementation(project(":infrastructure"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-security")

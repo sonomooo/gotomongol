@@ -8,7 +8,7 @@ import com.gotomongol.domain.event.BookingCreatedEvent
 import com.gotomongol.domain.event.TripConfirmedEvent
 import com.gotomongol.domain.port.*
 import com.gotomongol.domain.tour.*
-import com.gotomongol.user.service.UserService
+import com.gotomongol.application.UserService
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

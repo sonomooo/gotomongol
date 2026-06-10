@@ -1,9 +1,9 @@
 package com.gotomongol
 
-import com.gotomongol.tour.repository.ConfirmedTripRepository
-import com.gotomongol.tour.repository.QuoteRequestRepository
-import com.gotomongol.user.repository.UserRepository
-import com.gotomongol.user.service.UserService
+import com.gotomongol.infra.persistence.repository.JpaConfirmedTripRepository
+import com.gotomongol.infra.persistence.repository.JpaQuoteRequestRepository
+import com.gotomongol.infra.persistence.repository.JpaUserRepository
+import com.gotomongol.application.UserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired

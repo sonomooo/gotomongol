@@ -5,7 +5,7 @@ import com.gotomongol.domain.port.VerificationCodePort
 import com.gotomongol.domain.user.User
 import com.gotomongol.domain.user.VerificationCode
 import com.gotomongol.domain.user.VerificationType
-import com.gotomongol.user.service.UserService
+import com.gotomongol.application.UserService
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

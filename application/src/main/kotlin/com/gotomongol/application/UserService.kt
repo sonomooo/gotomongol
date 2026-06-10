@@ -1,4 +1,4 @@
-package com.gotomongol.user.service
+package com.gotomongol.application
 
 import com.gotomongol.domain.port.UserPort
 import com.gotomongol.domain.user.User
@@ -9,9 +9,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class UserService(private val userPort: UserPort) {
 
-    /**
-     * target (email or phone)으로 유저 조회 또는 생성
-     */
     @Transactional
     fun findOrCreate(target: String, name: String, termsAgreed: Boolean = true, privacyAgreed: Boolean = true, marketingAgreed: Boolean = false): User {
         val existing = findByTarget(target)

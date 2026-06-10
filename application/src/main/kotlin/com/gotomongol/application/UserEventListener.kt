@@ -1,8 +1,7 @@
-package com.gotomongol.user.listener
+package com.gotomongol.application
 
 import com.gotomongol.domain.event.BookingCreatedEvent
 import com.gotomongol.domain.event.QuoteSubmittedEvent
-import com.gotomongol.user.service.UserService
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
